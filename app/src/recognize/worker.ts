@@ -1,6 +1,5 @@
 /// <reference lib="webworker" />
 /** Recognition pipeline off the main thread: locate tiles → warp each to an upright crop → identify. */
-import { setDataBase } from "./data";
 import { detect, holeForCell, type Rgba } from "./detect";
 import { confidence, identify, loadRefs, shortlist, type Refs } from "./identify";
 import { locateTiles, warpQuad } from "./locate";
@@ -253,10 +252,7 @@ const progress = (stage: string) => self.postMessage({ progress: stage });
 
 self.addEventListener(
   "message",
-  async (
-    ev: MessageEvent<{ w: number; h: number; pixels: ArrayBuffer; base: string; exclude?: string }>,
-  ) => {
-    setDataBase(ev.data.base);
+  async (ev: MessageEvent<{ w: number; h: number; pixels: ArrayBuffer; exclude?: string }>) => {
     progress("Referenzdaten laden");
     refs ??= loadRefs();
     strips ??= loadStrips();

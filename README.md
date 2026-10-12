@@ -4,7 +4,7 @@ Fan-made scoring app for *Between Two Castles of Mad King Ludwig* (German editio
 replacing the discontinued "Mad King's Steward" iOS app. Photograph a finished castle, confirm the few
 uncertain tiles, add attendants and bonus cards, and get the score. Non-commercial, not affiliated with
 Stonemaier Games or Feuerland Spiele. Tiles are rendered as simplified colour/symbol cards; no publisher
-artwork is included (the recognition data in `app/public` is derived descriptors, not images).
+artwork is included (the recognition data in `app/src/recognize/data` is derived descriptors, not images).
 
 ## App (`app/`)
 
@@ -29,7 +29,7 @@ vp build
 
 Python/OpenCV scripts that build the recognition data from photos of the tiles (not in the repo):
 `crop_refs.py` (cut tiles out of sheet photos) → `label_refs.py` (OCR the names) → `link_refs.py` (map to tile ids)
-→ `export_refs.py` / `export_orb.py` / `export_strips.py` (write `app/public/refs.*`, `orb.*`, `strips.*`).
+→ `export_refs.py` / `export_orb.py` / `export_strips.py` (write `refs.*`, `orb.*`, `strips.*` into `app/src/recognize/data/`).
 `build_tiles.py` generates `app/src/data/tiles.json`.
 
 ```sh

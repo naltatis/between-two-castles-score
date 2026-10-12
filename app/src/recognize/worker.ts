@@ -3,6 +3,7 @@
 import { detect, holeForCell, type Rgba } from "./detect";
 import { confidence, identify, loadRefs, shortlist, type Refs } from "./identify";
 import { locateTiles, warpQuad } from "./locate";
+import { jsSpeed } from "./probe";
 import { identifyVariant, loadStrips, type Strips } from "./strips";
 import { loadCv, loadOrbRefs, verify, type OrbRefs } from "./verify";
 
@@ -31,7 +32,7 @@ export interface WorkerResult {
   /** which localisation produced the result */
   method: "holes" | "grid";
   /** ms per stage (benchmark/diagnostics) + how often the shortlist missed and all tiles were tried */
-  timing?: { locate: number; classify: number; cv: number; brute: number };
+  timing?: { locate: number; classify: number; cv: number; brute: number; js: number };
 }
 
 const CROP = 256;
@@ -146,6 +147,7 @@ const SHORTLIST = 32;
 /** wasm matching time of the current photo, and brute-force fallbacks */
 let cvMs = 0;
 let brute = 0;
+let js = 0;
 /** inliers needed for full confidence, and the lead over the runner-up */
 const INLIERS_FULL = 60;
 const RATIO_FULL = 2.0;
@@ -236,7 +238,7 @@ function runHoles(
     cells,
     throne: { box: loc.throne.box, tile: v?.tile },
     method: "holes",
-    timing: { locate: t0 - tl, classify: performance.now() - t0, cv: cvMs, brute },
+    timing: { locate: t0 - tl, classify: performance.now() - t0, cv: cvMs, brute, js },
   };
 }
 
@@ -298,20 +300,11 @@ function runGrid(
 /** stage report for the UI (also the only diagnostics we get from a phone) */
 const progress = (stage: string) => self.postMessage({ progress: stage });
 
-/** ms for a fixed JS loop: ~10 ms with a JIT, ~500 ms+ in an interpreter (iOS drops the JIT
- * under memory pressure); reported so a slow phone can be diagnosed from the screen */
-function jsSpeed(): number {
-  const t = performance.now();
-  const a = new Float32Array(1 << 16);
-  let acc = 0;
-  for (let k = 0; k < 200; k++) for (let i = 0; i < a.length; i++) acc += a[i]! += i & 7;
-  return Math.round(performance.now() - t) + (acc === 1 ? 1 : 0);
-}
-
 self.addEventListener(
   "message",
   async (ev: MessageEvent<{ w: number; h: number; pixels: ArrayBuffer; exclude?: string }>) => {
-    progress(`Referenzdaten laden · JS ${jsSpeed()} ms`);
+    js = jsSpeed();
+    progress(`Referenzdaten laden · JS ${js} ms`);
     refs ??= loadRefs();
     strips ??= loadStrips();
     cvReady ??= loadCv();

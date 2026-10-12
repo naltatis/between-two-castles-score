@@ -1,4 +1,5 @@
 /** Castle recognition from a photo. Coordinates follow the game model (throne at (0,0)/(1,0), y up). */
+import { jsSpeed } from "./probe";
 import type { WorkerResult } from "./worker";
 
 export interface RecognizedCell {
@@ -20,7 +21,7 @@ export interface Recognition {
   imageSize: [number, number];
   /** downscaled (rectified) photo; boxes are in `imageSize` coordinates */
   imageUrl?: string;
-  debug?: { method: string; tilePx: number; timing?: WorkerResult["timing"] };
+  debug?: { method: string; tilePx: number; timing?: WorkerResult["timing"]; jsMain?: number };
 }
 
 let worker: Worker | null = null;
@@ -63,6 +64,8 @@ export async function recognize(
   exclude = "",
   onProgress?: (stage: string) => void,
 ): Promise<Recognition> {
+  const jsMain = jsSpeed();
+  onProgress?.(`JS Hauptthread ${jsMain} ms`);
   const size: [number, number] = [canvas.width, canvas.height];
   const id = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height);
   // the 12 MP canvas has done its job; phones are tight on memory while the worker runs
@@ -94,6 +97,6 @@ export async function recognize(
     throne: res.throne,
     imageSize: [res.w, res.h],
     imageUrl: pv.toDataURL("image/jpeg", 0.8),
-    debug: { method: res.method, tilePx: res.tilePx, timing: res.timing },
+    debug: { method: res.method, tilePx: res.tilePx, timing: res.timing, jsMain },
   };
 }

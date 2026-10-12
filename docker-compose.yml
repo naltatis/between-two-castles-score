@@ -1,0 +1,9 @@
+# local / Unraid: docker compose up -d --build  → http://<host>:8090
+services:
+  app:
+    build: .
+    image: ghcr.io/naltatis/between-two-castles-score:latest
+    container_name: between-two-castles-score
+    ports:
+      - "8090:80"
+    restart: unless-stopped

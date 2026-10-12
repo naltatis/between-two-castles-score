@@ -1,0 +1,1659 @@
+[
+  {
+    "id": "grand-foyer",
+    "name": "Grand Foyer",
+    "type": "foyer",
+    "nameDe": "Foyer"
+  },
+  {
+    "id": "tower",
+    "name": "Tower",
+    "type": "tower",
+    "nameDe": "Turm"
+  },
+  {
+    "id": "fountain",
+    "name": "Fountain",
+    "type": "fountain",
+    "nameDe": "Brunnen"
+  },
+  {
+    "id": "between-two-rooms",
+    "name": "Between Two Rooms",
+    "type": "corridor",
+    "deco": "torch",
+    "wants": "torch",
+    "nameDe": "Zwischen zwei Räumen"
+  },
+  {
+    "id": "dead-end",
+    "name": "Dead End",
+    "type": "corridor",
+    "deco": "swords",
+    "wants": "swords",
+    "nameDe": "Sackgasse"
+  },
+  {
+    "id": "echo-chamber",
+    "name": "Echo Chamber",
+    "type": "corridor",
+    "deco": "torch",
+    "wants": "torch",
+    "nameDe": "Echokammer"
+  },
+  {
+    "id": "escape-room",
+    "name": "Escape Room",
+    "type": "corridor",
+    "deco": "painting",
+    "wants": "painting",
+    "nameDe": "Escape Room"
+  },
+  {
+    "id": "great-hall",
+    "name": "Great Hall",
+    "type": "corridor",
+    "deco": "swords",
+    "wants": "swords",
+    "nameDe": "Große Halle"
+  },
+  {
+    "id": "hall-of-creaking-floors",
+    "name": "Hall Of Creaking Floors",
+    "type": "corridor",
+    "deco": "painting",
+    "wants": "painting",
+    "nameDe": "Knarrender Gang"
+  },
+  {
+    "id": "hall-of-paintings",
+    "name": "Hall Of Paintings",
+    "type": "corridor",
+    "deco": "painting",
+    "wants": "painting",
+    "nameDe": "Gemäldehalle"
+  },
+  {
+    "id": "hall-of-sculptures",
+    "name": "Hall Of Sculptures",
+    "type": "corridor",
+    "deco": "mirror",
+    "wants": "mirror",
+    "nameDe": "Halle der Skulpturen"
+  },
+  {
+    "id": "hall-of-windows",
+    "name": "Hall of Windows",
+    "type": "corridor",
+    "deco": "painting",
+    "wants": "painting",
+    "nameDe": "Lichthalle"
+  },
+  {
+    "id": "hall-of-doors",
+    "name": "Hall of Doors",
+    "type": "corridor",
+    "deco": "mirror",
+    "wants": "mirror",
+    "nameDe": "Halle der Türen"
+  },
+  {
+    "id": "hall-of-ever-closing-walls",
+    "name": "Hall of Ever-Closing Walls",
+    "type": "corridor",
+    "deco": "swords",
+    "wants": "swords",
+    "nameDe": "Halle der wandernden Wände"
+  },
+  {
+    "id": "hall-of-ghosts",
+    "name": "Hall of Ghosts",
+    "type": "corridor",
+    "deco": "mirror",
+    "wants": "mirror",
+    "nameDe": "Geisterhalle"
+  },
+  {
+    "id": "hall-of-knights",
+    "name": "Hall of Knights",
+    "type": "corridor",
+    "deco": "painting",
+    "wants": "painting",
+    "nameDe": "Ritterhalle"
+  },
+  {
+    "id": "hall-of-mirrors",
+    "name": "Hall of Mirrors",
+    "type": "corridor",
+    "deco": "mirror",
+    "wants": "mirror",
+    "nameDe": "Spiegelsaal",
+    "deGuess": true
+  },
+  {
+    "id": "hall-of-portraits",
+    "name": "Hall of Portraits",
+    "type": "corridor",
+    "deco": "painting",
+    "wants": "painting",
+    "nameDe": "Halle der Porträts"
+  },
+  {
+    "id": "hall-of-puzzled-floors",
+    "name": "Hall Of Puzzled Floors",
+    "type": "corridor",
+    "deco": "torch",
+    "wants": "torch",
+    "nameDe": "Schachbretthalle"
+  },
+  {
+    "id": "lockdown-room",
+    "name": "Lockdown Room",
+    "type": "corridor",
+    "deco": "swords",
+    "wants": "swords",
+    "nameDe": "Hochsicherheitstrakt"
+  },
+  {
+    "id": "pacing-hall",
+    "name": "Pacing Hall",
+    "type": "corridor",
+    "deco": "mirror",
+    "wants": "mirror",
+    "nameDe": "Grübelgang"
+  },
+  {
+    "id": "promenade",
+    "name": "Promenade",
+    "type": "corridor",
+    "deco": "swords",
+    "wants": "swords",
+    "nameDe": "Promenade"
+  },
+  {
+    "id": "purgatory",
+    "name": "Purgatory",
+    "type": "corridor",
+    "deco": "torch",
+    "wants": "torch",
+    "nameDe": "Purgatorium"
+  },
+  {
+    "id": "laboratory",
+    "name": "Laboratory",
+    "type": "downstairs",
+    "deco": "swords",
+    "wants": "utility",
+    "nameDe": "Laboratorium"
+  },
+  {
+    "id": "hidden-lair",
+    "name": "Hidden Lair",
+    "type": "downstairs",
+    "deco": "torch",
+    "wants": "utility",
+    "nameDe": "Spinnenkammer"
+  },
+  {
+    "id": "subterranean-tunnel",
+    "name": "Subterranean Tunnel",
+    "type": "downstairs",
+    "deco": "painting",
+    "wants": "utility",
+    "nameDe": "Unterirdischer Tunnel"
+  },
+  {
+    "id": "gunpowder-room",
+    "name": "Gunpowder Room",
+    "type": "downstairs",
+    "deco": "painting",
+    "wants": "corridor",
+    "column": "both",
+    "nameDe": "Pulverkammer"
+  },
+  {
+    "id": "hidden-entrance",
+    "name": "Hidden Entrance",
+    "type": "downstairs",
+    "deco": "swords",
+    "wants": "corridor",
+    "column": "both",
+    "nameDe": "Versteckter Eingang"
+  },
+  {
+    "id": "dungeon",
+    "name": "Dungeon",
+    "type": "downstairs",
+    "deco": "mirror",
+    "wants": "corridor",
+    "column": "both",
+    "nameDe": "Verlies"
+  },
+  {
+    "id": "mold-room",
+    "name": "Mold Room",
+    "type": "downstairs",
+    "deco": "swords",
+    "wants": "food",
+    "nameDe": "Käsekeller"
+  },
+  {
+    "id": "fungus-room",
+    "name": "Fungus Room",
+    "type": "downstairs",
+    "deco": "mirror",
+    "wants": "food",
+    "nameDe": "Pilzfarm"
+  },
+  {
+    "id": "wine-cellar",
+    "name": "Wine Cellar",
+    "type": "downstairs",
+    "deco": "torch",
+    "wants": "food",
+    "nameDe": "Weinkeller"
+  },
+  {
+    "id": "snake-pit",
+    "name": "Snake Pit",
+    "type": "downstairs",
+    "deco": "mirror",
+    "wants": "living",
+    "nameDe": "Schlangengrube"
+  },
+  {
+    "id": "padded-room",
+    "name": "Padded Room",
+    "type": "downstairs",
+    "deco": "torch",
+    "wants": "living",
+    "nameDe": "Gummizelle"
+  },
+  {
+    "id": "jewel-room",
+    "name": "Jewel Room",
+    "type": "downstairs",
+    "deco": "swords",
+    "wants": "living",
+    "nameDe": "Juwelenraum"
+  },
+  {
+    "id": "knight-room",
+    "name": "Knight Room",
+    "type": "downstairs",
+    "deco": "mirror",
+    "wants": "specialty",
+    "per": 2,
+    "column": "both",
+    "nameDe": "Ritterkammer"
+  },
+  {
+    "id": "venus-grotto",
+    "name": "Venus Grotto",
+    "type": "downstairs",
+    "deco": "torch",
+    "wants": "specialty",
+    "per": 2,
+    "column": "both",
+    "nameDe": "Venusgrotte"
+  },
+  {
+    "id": "armory",
+    "name": "Armory",
+    "type": "downstairs",
+    "deco": "painting",
+    "wants": "specialty",
+    "per": 2,
+    "column": "both",
+    "nameDe": "Waffenkammer"
+  },
+  {
+    "id": "the-hole",
+    "name": "The Hole",
+    "type": "downstairs",
+    "deco": "painting",
+    "wants": "sleeping",
+    "nameDe": "Das Loch"
+  },
+  {
+    "id": "quiet-room",
+    "name": "Quiet Room",
+    "type": "downstairs",
+    "deco": "torch",
+    "wants": "sleeping",
+    "nameDe": "Ruheraum"
+  },
+  {
+    "id": "treasure-room",
+    "name": "Treasure Room",
+    "type": "downstairs",
+    "deco": "swords",
+    "wants": "sleeping",
+    "nameDe": "Schatzkammer"
+  },
+  {
+    "id": "pit-of-despair",
+    "name": "Pit Of Despair",
+    "type": "downstairs",
+    "deco": "mirror",
+    "wants": "downstairs",
+    "column": "both",
+    "nameDe": "Folterkammer"
+  },
+  {
+    "id": "crypt",
+    "name": "Crypt",
+    "type": "downstairs",
+    "deco": "painting",
+    "wants": "downstairs",
+    "column": "both",
+    "nameDe": "Krypta"
+  },
+  {
+    "id": "spy-room",
+    "name": "Spy Room",
+    "type": "downstairs",
+    "deco": "torch",
+    "wants": "downstairs",
+    "column": "both",
+    "nameDe": "Spionageraum"
+  },
+  {
+    "id": "scullery",
+    "name": "Scullery",
+    "type": "food",
+    "deco": "torch",
+    "wants": "utility",
+    "axis": "vertical",
+    "nameDe": "Spülküche"
+  },
+  {
+    "id": "bakery",
+    "name": "Bakery",
+    "type": "food",
+    "deco": "swords",
+    "wants": "utility",
+    "axis": "horizontal",
+    "nameDe": "Backstube"
+  },
+  {
+    "id": "buttery",
+    "name": "Buttery",
+    "type": "food",
+    "deco": "torch",
+    "wants": "corridor",
+    "axis": "vertical",
+    "nameDe": "Buttervorrat"
+  },
+  {
+    "id": "breakfast-nook",
+    "name": "Breakfast Nook",
+    "type": "food",
+    "deco": "painting",
+    "wants": "corridor",
+    "axis": "vertical",
+    "nameDe": "Frühstücksnische"
+  },
+  {
+    "id": "pantry",
+    "name": "Pantry",
+    "type": "food",
+    "deco": "swords",
+    "wants": "corridor",
+    "axis": "horizontal",
+    "nameDe": "Speisekammer"
+  },
+  {
+    "id": "chocolate-room",
+    "name": "Chocolate Room",
+    "type": "food",
+    "deco": "painting",
+    "wants": "downstairs",
+    "axis": "below2",
+    "nameDe": "Schokoladerie"
+  },
+  {
+    "id": "spice-room",
+    "name": "Spice Room",
+    "type": "food",
+    "deco": "mirror",
+    "wants": "downstairs",
+    "axis": "below2",
+    "nameDe": "Gewürzraum"
+  },
+  {
+    "id": "kitchen",
+    "name": "Kitchen",
+    "type": "food",
+    "deco": "torch",
+    "wants": "food",
+    "axis": "vertical",
+    "nameDe": "Küche"
+  },
+  {
+    "id": "dining-room",
+    "name": "Dining Room",
+    "type": "food",
+    "deco": "painting",
+    "wants": "food",
+    "axis": "vertical",
+    "nameDe": "Speisesaal"
+  },
+  {
+    "id": "sauerkraut-room",
+    "name": "Sauerkraut Room",
+    "type": "food",
+    "deco": "mirror",
+    "wants": "food",
+    "axis": "horizontal",
+    "nameDe": "Sauerkrautraum"
+  },
+  {
+    "id": "morning-tea-room",
+    "name": "Morning Tea Room",
+    "type": "food",
+    "deco": "swords",
+    "wants": "living",
+    "axis": "vertical",
+    "nameDe": "10-Uhr-Tee-Raum"
+  },
+  {
+    "id": "brewery",
+    "name": "Brewery",
+    "type": "food",
+    "deco": "mirror",
+    "wants": "living",
+    "axis": "vertical",
+    "nameDe": "Bräustüberl"
+  },
+  {
+    "id": "ice-house",
+    "name": "Ice House",
+    "type": "food",
+    "deco": "torch",
+    "wants": "living",
+    "axis": "horizontal",
+    "nameDe": "Eisraum"
+  },
+  {
+    "id": "cutlery-room",
+    "name": "Cutlery Room",
+    "type": "food",
+    "deco": "painting",
+    "wants": "outdoor",
+    "axis": "horizontal",
+    "nameDe": "Besteckraum"
+  },
+  {
+    "id": "meat-locker",
+    "name": "Meat Locker",
+    "type": "food",
+    "deco": "swords",
+    "wants": "outdoor",
+    "axis": "horizontal",
+    "nameDe": "Schlachtraum"
+  },
+  {
+    "id": "brandy-room",
+    "name": "Brandy Room",
+    "type": "food",
+    "deco": "painting",
+    "wants": "specialty",
+    "axis": "vertical",
+    "nameDe": "Branntweinzimmer"
+  },
+  {
+    "id": "siege-food-storage",
+    "name": "Siege Food Storage",
+    "type": "food",
+    "deco": "swords",
+    "wants": "specialty",
+    "axis": "vertical",
+    "nameDe": "Belagerungsvorrat"
+  },
+  {
+    "id": "china-room",
+    "name": "China Room",
+    "type": "food",
+    "deco": "mirror",
+    "wants": "specialty",
+    "axis": "horizontal",
+    "nameDe": "Porzellanraum"
+  },
+  {
+    "id": "wine-room",
+    "name": "Wine Room",
+    "type": "food",
+    "deco": "mirror",
+    "wants": "sleeping",
+    "axis": "vertical",
+    "nameDe": "Weinstube"
+  },
+  {
+    "id": "afternoon-tea-room",
+    "name": "Afternoon Tea Room",
+    "type": "food",
+    "deco": "torch",
+    "wants": "sleeping",
+    "axis": "vertical",
+    "nameDe": "15-Uhr-Tee-Raum"
+  },
+  {
+    "id": "crepery",
+    "name": "Crepery",
+    "type": "food",
+    "deco": "swords",
+    "wants": "sleeping",
+    "axis": "vertical",
+    "nameDe": "Crêpeküche"
+  },
+  {
+    "id": "drawing-room",
+    "name": "Drawing Room",
+    "type": "living",
+    "deco": "painting",
+    "wants": "utility",
+    "nameDe": "Unterhaltungsraum"
+  },
+  {
+    "id": "harp-room",
+    "name": "Harp Room",
+    "type": "living",
+    "deco": "mirror",
+    "wants": "utility",
+    "nameDe": "Harfenzimmer",
+    "deGuess": true
+  },
+  {
+    "id": "gallery",
+    "name": "Gallery",
+    "type": "living",
+    "deco": "swords",
+    "wants": "utility",
+    "nameDe": "Galerie"
+  },
+  {
+    "id": "reception-room",
+    "name": "Reception Room",
+    "type": "living",
+    "deco": "torch",
+    "wants": "corridor",
+    "nameDe": "Empfangszimmer"
+  },
+  {
+    "id": "waiting-room",
+    "name": "Waiting Room",
+    "type": "living",
+    "deco": "mirror",
+    "wants": "corridor",
+    "nameDe": "Wartezimmer"
+  },
+  {
+    "id": "hat-room",
+    "name": "Hat Room",
+    "type": "living",
+    "deco": "painting",
+    "wants": "corridor",
+    "nameDe": "Hutraum"
+  },
+  {
+    "id": "cape-room",
+    "name": "Cape Room",
+    "type": "living",
+    "deco": "painting",
+    "wants": "downstairs",
+    "per": 2,
+    "nameDe": "Umhangszimmer"
+  },
+  {
+    "id": "taxidermy-showroom",
+    "name": "Taxidermy Showroom",
+    "type": "living",
+    "deco": "torch",
+    "wants": "downstairs",
+    "per": 2,
+    "nameDe": "Jagdtrophäenraum"
+  },
+  {
+    "id": "vestibule",
+    "name": "Vestibule",
+    "type": "living",
+    "deco": "swords",
+    "wants": "food",
+    "nameDe": "Diele"
+  },
+  {
+    "id": "parlor",
+    "name": "Parlor",
+    "type": "living",
+    "deco": "torch",
+    "wants": "food",
+    "nameDe": "Sprechzimmer"
+  },
+  {
+    "id": "fireplace",
+    "name": "FirePlace",
+    "type": "living",
+    "deco": "mirror",
+    "wants": "food",
+    "nameDe": "Kaminraum"
+  },
+  {
+    "id": "observatory",
+    "name": "Observatory",
+    "type": "living",
+    "deco": "torch",
+    "wants": "living",
+    "nameDe": "Observatorium"
+  },
+  {
+    "id": "rug-room",
+    "name": "Rug Room",
+    "type": "living",
+    "deco": "painting",
+    "wants": "living",
+    "nameDe": "Orientalischer Raum"
+  },
+  {
+    "id": "sitting-room",
+    "name": "Sitting Room",
+    "type": "living",
+    "deco": "mirror",
+    "wants": "outdoor",
+    "per": 2,
+    "nameDe": "Wohnzimmer"
+  },
+  {
+    "id": "reading-room",
+    "name": "Reading Room",
+    "type": "living",
+    "deco": "torch",
+    "wants": "outdoor",
+    "per": 2,
+    "nameDe": "Lesezimmer"
+  },
+  {
+    "id": "meditation-room",
+    "name": "Meditation Room",
+    "type": "living",
+    "deco": "swords",
+    "wants": "outdoor",
+    "per": 2,
+    "nameDe": "Meditationsraum"
+  },
+  {
+    "id": "library",
+    "name": "Library",
+    "type": "living",
+    "deco": "swords",
+    "wants": "specialty",
+    "nameDe": "Bibliothek"
+  },
+  {
+    "id": "study",
+    "name": "Study",
+    "type": "living",
+    "deco": "mirror",
+    "wants": "specialty",
+    "nameDe": "Arbeitszimmer"
+  },
+  {
+    "id": "tapestry-room",
+    "name": "Tapestry Room",
+    "type": "living",
+    "deco": "swords",
+    "wants": "sleeping",
+    "nameDe": "Teppichraum"
+  },
+  {
+    "id": "map-room",
+    "name": "Map Room",
+    "type": "living",
+    "deco": "mirror",
+    "wants": "sleeping",
+    "nameDe": "Kartographieraum"
+  },
+  {
+    "id": "salon",
+    "name": "Salon",
+    "type": "living",
+    "deco": "painting",
+    "wants": "sleeping",
+    "nameDe": "Salon"
+  },
+  {
+    "id": "aviary",
+    "name": "Aviary",
+    "type": "outdoor",
+    "wants": "utility",
+    "nameDe": "Voliere"
+  },
+  {
+    "id": "winter-garden",
+    "name": "Winter Garden",
+    "type": "outdoor",
+    "wants": "utility",
+    "nameDe": "Wintergarten"
+  },
+  {
+    "id": "chicken-coop",
+    "name": "Chicken Coop",
+    "type": "outdoor",
+    "wants": "utility",
+    "nameDe": "Hühnerstall"
+  },
+  {
+    "id": "butterfly-garden",
+    "name": "Butterfly Garden",
+    "type": "outdoor",
+    "wants": "corridor",
+    "nameDe": "Schmetterlingsgarten"
+  },
+  {
+    "id": "archery-range",
+    "name": "Archery Range",
+    "type": "outdoor",
+    "wants": "corridor",
+    "nameDe": "Schießstand"
+  },
+  {
+    "id": "walking-path",
+    "name": "Walking Path",
+    "type": "outdoor",
+    "wants": "corridor",
+    "nameDe": "Spazierweg"
+  },
+  {
+    "id": "guardhouse",
+    "name": "Guardhouse",
+    "type": "outdoor",
+    "wants": "downstairs",
+    "nameDe": "Wache"
+  },
+  {
+    "id": "stables",
+    "name": "Stables",
+    "type": "outdoor",
+    "wants": "downstairs",
+    "nameDe": "Pferdestall"
+  },
+  {
+    "id": "sty",
+    "name": "Sty",
+    "type": "outdoor",
+    "wants": "downstairs",
+    "nameDe": "Schweinestall"
+  },
+  {
+    "id": "vegetable-garden",
+    "name": "Vegetable Garden",
+    "type": "outdoor",
+    "wants": "food",
+    "nameDe": "Gemüsebeet"
+  },
+  {
+    "id": "fish-pond",
+    "name": "Fish Pond",
+    "type": "outdoor",
+    "wants": "food",
+    "nameDe": "Fischteich"
+  },
+  {
+    "id": "pumpkin-garden",
+    "name": "Pumpkin Garden",
+    "type": "outdoor",
+    "wants": "food",
+    "nameDe": "Kürbisbeet"
+  },
+  {
+    "id": "firewood-storage",
+    "name": "Firewood Storage",
+    "type": "outdoor",
+    "wants": "living",
+    "nameDe": "Holzvorrat"
+  },
+  {
+    "id": "vineyard",
+    "name": "Vineyard",
+    "type": "outdoor",
+    "wants": "living",
+    "nameDe": "Weingarten"
+  },
+  {
+    "id": "swimming-hole",
+    "name": "Swimming Hole",
+    "type": "outdoor",
+    "wants": "living",
+    "nameDe": "Schwimmbad"
+  },
+  {
+    "id": "flower-garden",
+    "name": "Flower Garden",
+    "type": "outdoor",
+    "wants": "specialty",
+    "nameDe": "Blumengarten"
+  },
+  {
+    "id": "french-gazebo",
+    "name": "French Gazebo",
+    "type": "outdoor",
+    "wants": "specialty",
+    "nameDe": "Französischer Pavillon"
+  },
+  {
+    "id": "biergarten",
+    "name": "Biergarten",
+    "type": "outdoor",
+    "wants": "specialty",
+    "nameDe": "Biergarten"
+  },
+  {
+    "id": "terrace",
+    "name": "Terrace",
+    "type": "outdoor",
+    "wants": "sleeping",
+    "nameDe": "Terrasse"
+  },
+  {
+    "id": "grand-balcony",
+    "name": "Grand Balcony",
+    "type": "outdoor",
+    "wants": "sleeping",
+    "nameDe": "Großer Balkon"
+  },
+  {
+    "id": "turtle-pond",
+    "name": "Turtle Pond",
+    "type": "outdoor",
+    "wants": "sleeping",
+    "nameDe": "Schildkrötenteich"
+  },
+  {
+    "id": "puppy-room",
+    "name": "Puppy Room",
+    "type": "sleeping",
+    "deco": "painting",
+    "nameDe": "Welpenraum"
+  },
+  {
+    "id": "childrens-room",
+    "name": "Children's Room",
+    "type": "sleeping",
+    "deco": "swords",
+    "nameDe": "Kinderzimmer"
+  },
+  {
+    "id": "blanket-room",
+    "name": "Blanket Room",
+    "type": "sleeping",
+    "deco": "painting",
+    "nameDe": "Wolldeckenraum"
+  },
+  {
+    "id": "nap-room",
+    "name": "Nap Room",
+    "type": "sleeping",
+    "deco": "torch",
+    "nameDe": "Nickerchenraum"
+  },
+  {
+    "id": "solar",
+    "name": "Solar",
+    "type": "sleeping",
+    "deco": "mirror",
+    "nameDe": "Sonnraum"
+  },
+  {
+    "id": "in-law-suite",
+    "name": "In-Law Suite",
+    "type": "sleeping",
+    "deco": "swords",
+    "nameDe": "Schwiegereltern-Suite"
+  },
+  {
+    "id": "servants-quarters",
+    "name": "Servant's Quarters",
+    "type": "sleeping",
+    "deco": "painting",
+    "nameDe": "Dienstbotenquartier"
+  },
+  {
+    "id": "nursery",
+    "name": "Nursery",
+    "type": "sleeping",
+    "deco": "torch",
+    "nameDe": "Kinderkrippe"
+  },
+  {
+    "id": "princess-chambers",
+    "name": "Princess' Chambers",
+    "type": "sleeping",
+    "deco": "mirror",
+    "nameDe": "Gemach der Prinzessin"
+  },
+  {
+    "id": "rabbit-room",
+    "name": "Rabbit Room",
+    "type": "sleeping",
+    "deco": "swords",
+    "nameDe": "Kaninchenraum"
+  },
+  {
+    "id": "dreaming-room",
+    "name": "Dreaming Room",
+    "type": "sleeping",
+    "deco": "painting",
+    "nameDe": "Traumzimmer"
+  },
+  {
+    "id": "dressing-room",
+    "name": "Dressing Room",
+    "type": "sleeping",
+    "deco": "torch",
+    "nameDe": "Ankleidezimmer"
+  },
+  {
+    "id": "tasso-room",
+    "name": "Tasso Room",
+    "type": "sleeping",
+    "deco": "mirror",
+    "nameDe": "Tasso-Raum"
+  },
+  {
+    "id": "guest-bedroom",
+    "name": "Guest Bedroom",
+    "type": "sleeping",
+    "deco": "swords",
+    "nameDe": "Gästeschlafzimmer"
+  },
+  {
+    "id": "bunk-room",
+    "name": "Bunk Room",
+    "type": "sleeping",
+    "deco": "painting",
+    "nameDe": "Stockbettenzimmer"
+  },
+  {
+    "id": "kings-chambers",
+    "name": "King's Chambers",
+    "type": "sleeping",
+    "deco": "torch",
+    "nameDe": "Gemach des Königs"
+  },
+  {
+    "id": "queens-chambers",
+    "name": "Queen's Chambers",
+    "type": "sleeping",
+    "deco": "mirror",
+    "nameDe": "Gemach der Königin"
+  },
+  {
+    "id": "midnight-room",
+    "name": "Midnight Room",
+    "type": "sleeping",
+    "deco": "swords",
+    "nameDe": "Mitternachtsraum"
+  },
+  {
+    "id": "hibernation-chamber",
+    "name": "Hibernation Chamber",
+    "type": "sleeping",
+    "deco": "painting",
+    "nameDe": "Winterschlafkammer"
+  },
+  {
+    "id": "pillow-room",
+    "name": "Pillow Room",
+    "type": "sleeping",
+    "deco": "torch",
+    "nameDe": "Kissenraum"
+  },
+  {
+    "id": "princes-chambers",
+    "name": "Prince's Chambers",
+    "type": "sleeping",
+    "deco": "mirror",
+    "nameDe": "Gemach des Prinzen"
+  },
+  {
+    "id": "glassmaking-room",
+    "name": "Glassmaking Room",
+    "type": "utility",
+    "deco": "mirror",
+    "wants": "utility",
+    "nameDe": "Glasbläserei"
+  },
+  {
+    "id": "washroom",
+    "name": "WashRoom",
+    "type": "utility",
+    "deco": "mirror",
+    "wants": "living",
+    "nameDe": "Waschraum"
+  },
+  {
+    "id": "game-storage",
+    "name": "Game Storage",
+    "type": "utility",
+    "deco": "swords",
+    "wants": "living",
+    "nameDe": "Spielevorrat"
+  },
+  {
+    "id": "coat-room",
+    "name": "Coat Room",
+    "type": "utility",
+    "deco": "mirror",
+    "wants": "outdoor",
+    "nameDe": "Jackenkammer"
+  },
+  {
+    "id": "mud-room",
+    "name": "Mud Room",
+    "type": "utility",
+    "deco": "painting",
+    "wants": "outdoor",
+    "nameDe": "Schmutzraum"
+  },
+  {
+    "id": "panic-room",
+    "name": "Panic Room",
+    "type": "utility",
+    "deco": "swords",
+    "wants": "specialty",
+    "nameDe": "Panikraum"
+  },
+  {
+    "id": "crown-storage",
+    "name": "Crown Storage",
+    "type": "utility",
+    "deco": "painting",
+    "wants": "specialty",
+    "nameDe": "Kronenvorrat"
+  },
+  {
+    "id": "sauna",
+    "name": "Sauna",
+    "type": "utility",
+    "deco": "swords",
+    "wants": "sleeping",
+    "nameDe": "Sauna"
+  },
+  {
+    "id": "broom-closet",
+    "name": "Broom Closet",
+    "type": "utility",
+    "deco": "torch",
+    "wants": "sleeping",
+    "nameDe": "Besenkammer"
+  },
+  {
+    "id": "kennel",
+    "name": "Kennel",
+    "type": "utility",
+    "deco": "painting",
+    "wants": "sleeping",
+    "nameDe": "Hundestube"
+  },
+  {
+    "id": "tool-room",
+    "name": "Tool Room",
+    "type": "utility",
+    "deco": "mirror",
+    "wants": "utility",
+    "nameDe": "Werkzeugkammer"
+  },
+  {
+    "id": "repair-shop",
+    "name": "Repair Shop",
+    "type": "utility",
+    "deco": "swords",
+    "wants": "utility",
+    "nameDe": "Reparaturwerkstatt"
+  },
+  {
+    "id": "schoolhouse",
+    "name": "Schoolhouse",
+    "type": "utility",
+    "deco": "torch",
+    "wants": "corridor",
+    "nameDe": "Klassenzimmer"
+  },
+  {
+    "id": "kittenry",
+    "name": "Kittenry",
+    "type": "utility",
+    "deco": "painting",
+    "wants": "corridor",
+    "nameDe": "Kätzchenraum"
+  },
+  {
+    "id": "key-room",
+    "name": "Key Room",
+    "type": "utility",
+    "deco": "mirror",
+    "wants": "corridor",
+    "nameDe": "Schlüsselraum"
+  },
+  {
+    "id": "shield-room",
+    "name": "Shield Room",
+    "type": "utility",
+    "deco": "torch",
+    "wants": "downstairs",
+    "nameDe": "Wappenzimmer"
+  },
+  {
+    "id": "scythe-room",
+    "name": "Scythe Room",
+    "type": "utility",
+    "deco": "painting",
+    "wants": "downstairs",
+    "nameDe": "Sensenkammer"
+  },
+  {
+    "id": "powder-room",
+    "name": "Powder Room",
+    "type": "utility",
+    "deco": "mirror",
+    "wants": "food",
+    "nameDe": "Schminkraum"
+  },
+  {
+    "id": "dumbwaiter",
+    "name": "Dumbwaiter",
+    "type": "utility",
+    "deco": "swords",
+    "wants": "food",
+    "nameDe": "Speisenaufzug"
+  },
+  {
+    "id": "laundry-room",
+    "name": "Laundry Room",
+    "type": "utility",
+    "deco": "torch",
+    "wants": "food",
+    "nameDe": "Wäscheraum"
+  },
+  {
+    "id": "torch-storage",
+    "name": "Torch Storage",
+    "type": "utility",
+    "deco": "torch",
+    "wants": "living",
+    "nameDe": "Fackelvorrat"
+  },
+  {
+    "id": "ballroom-activity",
+    "name": "Ballroom",
+    "type": "ballroom",
+    "wants": "activity"
+  },
+  {
+    "id": "ballroom-corridor",
+    "name": "Ballroom",
+    "type": "ballroom",
+    "wants": "corridor"
+  },
+  {
+    "id": "ballroom-food",
+    "name": "Ballroom",
+    "type": "ballroom",
+    "wants": "food"
+  },
+  {
+    "id": "ballroom-downstairs",
+    "name": "Ballroom",
+    "type": "ballroom",
+    "wants": "downstairs"
+  },
+  {
+    "id": "ballroom-sleeping",
+    "name": "Ballroom",
+    "type": "ballroom",
+    "wants": "sleeping"
+  },
+  {
+    "id": "ballroom-outdoor",
+    "name": "Ballroom",
+    "type": "ballroom",
+    "wants": "outdoor"
+  },
+  {
+    "id": "ballroom-living",
+    "name": "Ballroom",
+    "type": "ballroom",
+    "wants": "living"
+  },
+  {
+    "id": "ballroom-utility",
+    "name": "Ballroom",
+    "type": "ballroom",
+    "wants": "utility"
+  },
+  {
+    "id": "colonnade",
+    "name": "Colonnade",
+    "type": "corridor",
+    "deco": "swords",
+    "wants": "swords"
+  },
+  {
+    "id": "vestibule-corridor",
+    "name": "Vestibule",
+    "type": "corridor",
+    "deco": "mirror",
+    "wants": "mirror"
+  },
+  {
+    "id": "flying-buttresses",
+    "name": "Flying Buttresses",
+    "type": "corridor",
+    "deco": "torch",
+    "wants": "torch"
+  },
+  {
+    "id": "bath",
+    "name": "Bath",
+    "type": "downstairs",
+    "deco": "painting",
+    "wants": "activity"
+  },
+  {
+    "id": "hideout",
+    "name": "Hideout",
+    "type": "downstairs",
+    "deco": "swords",
+    "wants": "activity"
+  },
+  {
+    "id": "crystal-cave",
+    "name": "Crystal Cave",
+    "type": "downstairs",
+    "deco": "mirror",
+    "wants": "activity"
+  },
+  {
+    "id": "club-room",
+    "name": "Club Room",
+    "type": "living",
+    "deco": "mirror",
+    "wants": "activity"
+  },
+  {
+    "id": "chaise-room",
+    "name": "Chaise Room",
+    "type": "living",
+    "deco": "painting",
+    "wants": "activity"
+  },
+  {
+    "id": "lounge",
+    "name": "Lounge",
+    "type": "living",
+    "deco": "swords",
+    "wants": "activity"
+  },
+  {
+    "id": "saxophone-room",
+    "name": "Saxophone Room",
+    "type": "living",
+    "deco": "mirror",
+    "wants": "living"
+  },
+  {
+    "id": "jammery",
+    "name": "Jammery",
+    "type": "food",
+    "deco": "torch",
+    "wants": "activity",
+    "axis": "vertical"
+  },
+  {
+    "id": "mill-room",
+    "name": "Mill Room",
+    "type": "food",
+    "deco": "swords",
+    "wants": "activity",
+    "axis": "horizontal"
+  },
+  {
+    "id": "granary",
+    "name": "Granary",
+    "type": "food",
+    "deco": "mirror",
+    "wants": "activity",
+    "axis": "horizontal"
+  },
+  {
+    "id": "sleepover-room",
+    "name": "Sleepover Room",
+    "type": "sleeping",
+    "deco": "mirror"
+  },
+  {
+    "id": "loft",
+    "name": "Loft",
+    "type": "sleeping",
+    "deco": "torch"
+  },
+  {
+    "id": "tent-room",
+    "name": "Tent Room",
+    "type": "sleeping",
+    "deco": "painting"
+  },
+  {
+    "id": "horseshoe-pit",
+    "name": "Horseshoe Pit",
+    "type": "outdoor",
+    "wants": "activity"
+  },
+  {
+    "id": "bocce-court",
+    "name": "Bocce Court",
+    "type": "outdoor",
+    "wants": "activity"
+  },
+  {
+    "id": "tennis-court",
+    "name": "Tennis Court",
+    "type": "outdoor",
+    "wants": "activity"
+  },
+  {
+    "id": "art-supplies",
+    "name": "Art Supplies",
+    "type": "utility",
+    "deco": "painting",
+    "wants": "activity"
+  },
+  {
+    "id": "ball-storage",
+    "name": "Ball Storage",
+    "type": "utility",
+    "deco": "swords",
+    "wants": "activity"
+  },
+  {
+    "id": "party-storage",
+    "name": "Party Storage",
+    "type": "utility",
+    "deco": "torch",
+    "wants": "activity"
+  },
+  {
+    "id": "dice-tower-room",
+    "name": "Dice Tower Room",
+    "type": "utility",
+    "deco": "torch",
+    "promo": true,
+    "wants": "utility",
+    "per": 2
+  },
+  {
+    "id": "chess-room",
+    "name": "Chess Room",
+    "type": "activity",
+    "deco": "swords",
+    "wants": "activity"
+  },
+  {
+    "id": "train-room",
+    "name": "Train Room",
+    "type": "activity",
+    "deco": "torch",
+    "wants": "activity"
+  },
+  {
+    "id": "oratory",
+    "name": "Oratory",
+    "type": "activity",
+    "deco": "mirror",
+    "wants": "corridor"
+  },
+  {
+    "id": "printing-room",
+    "name": "Printing Room",
+    "type": "activity",
+    "deco": "painting",
+    "wants": "downstairs"
+  },
+  {
+    "id": "dancing-hall",
+    "name": "Dancing Hall",
+    "type": "activity",
+    "deco": "mirror",
+    "wants": "food"
+  },
+  {
+    "id": "climbing-room",
+    "name": "Climbing Room",
+    "type": "activity",
+    "deco": "torch",
+    "wants": "food"
+  },
+  {
+    "id": "drafting-room",
+    "name": "Drafting Room",
+    "type": "activity",
+    "deco": "painting",
+    "wants": "activity"
+  },
+  {
+    "id": "story-room",
+    "name": "Story Room",
+    "type": "activity",
+    "deco": "painting",
+    "wants": "corridor"
+  },
+  {
+    "id": "gameroom",
+    "name": "GameRoom",
+    "type": "activity",
+    "deco": "swords",
+    "wants": "corridor"
+  },
+  {
+    "id": "darts-room",
+    "name": "Darts Room",
+    "type": "activity",
+    "deco": "swords",
+    "wants": "downstairs"
+  },
+  {
+    "id": "piano-room",
+    "name": "Piano Room",
+    "type": "activity",
+    "deco": "mirror",
+    "wants": "downstairs"
+  },
+  {
+    "id": "boxing-room",
+    "name": "Boxing Room",
+    "type": "activity",
+    "deco": "swords",
+    "wants": "food"
+  },
+  {
+    "id": "billiards-room",
+    "name": "Billiards Room",
+    "type": "activity",
+    "deco": "torch",
+    "wants": "living"
+  },
+  {
+    "id": "table-tennis",
+    "name": "Table Tennis",
+    "type": "activity",
+    "deco": "swords",
+    "wants": "living"
+  },
+  {
+    "id": "bowling-alley",
+    "name": "Bowling Alley",
+    "type": "activity",
+    "deco": "painting",
+    "wants": "living"
+  },
+  {
+    "id": "theatre",
+    "name": "Theatre",
+    "type": "activity",
+    "deco": "painting",
+    "wants": "outdoor"
+  },
+  {
+    "id": "flute-room",
+    "name": "Flute Room",
+    "type": "activity",
+    "deco": "torch",
+    "wants": "outdoor"
+  },
+  {
+    "id": "singers-chamber",
+    "name": "Singers Chamber",
+    "type": "activity",
+    "deco": "mirror",
+    "wants": "sleeping"
+  },
+  {
+    "id": "escape-room-activity",
+    "name": "Escape Room",
+    "type": "activity",
+    "deco": "torch",
+    "wants": "utility",
+    "nameDe": "Escape Room"
+  },
+  {
+    "id": "puzzle-room",
+    "name": "Puzzle Room",
+    "type": "activity",
+    "deco": "mirror",
+    "wants": "outdoor"
+  },
+  {
+    "id": "trumpet-room",
+    "name": "Trumpet Room",
+    "type": "activity",
+    "deco": "torch",
+    "wants": "sleeping"
+  },
+  {
+    "id": "play-room",
+    "name": "Play Room",
+    "type": "activity",
+    "deco": "swords",
+    "wants": "sleeping"
+  },
+  {
+    "id": "festivus-room",
+    "name": "Festivus Room",
+    "type": "activity",
+    "deco": "mirror",
+    "wants": "utility"
+  },
+  {
+    "id": "painting-room",
+    "name": "Painting Room",
+    "type": "activity",
+    "deco": "painting",
+    "wants": "utility"
+  },
+  {
+    "id": "ride-the-dumbwaiter",
+    "name": "Ride The DumbWaiter",
+    "type": "secret",
+    "dir": "up"
+  },
+  {
+    "id": "within-the-walls",
+    "name": "Within The Walls",
+    "type": "secret",
+    "dir": "right"
+  },
+  {
+    "id": "behind-the-bookcase",
+    "name": "Behind The BookCase",
+    "type": "secret",
+    "dir": "left"
+  },
+  {
+    "id": "climb-the-ladder",
+    "name": "Climb The Ladder",
+    "type": "secret",
+    "dir": "down"
+  },
+  {
+    "id": "find-the-trap-door",
+    "name": "Find The Trap Door",
+    "type": "secret",
+    "dir": "down"
+  },
+  {
+    "id": "opposite-the-fireplace",
+    "name": "Opposite The Fireplace",
+    "type": "secret",
+    "dir": "right"
+  },
+  {
+    "id": "through-the-wardrobe",
+    "name": "Through The Wardrobe",
+    "type": "secret",
+    "dir": "left"
+  },
+  {
+    "id": "among-the-curtains",
+    "name": "Among The Curtains",
+    "type": "secret",
+    "dir": "left"
+  },
+  {
+    "id": "hidden-compartment",
+    "name": "Hidden Compartment",
+    "type": "secret",
+    "dir": "down"
+  },
+  {
+    "id": "in-the-rafters",
+    "name": "In The Rafters",
+    "type": "secret",
+    "dir": "up"
+  },
+  {
+    "id": "out-the-window",
+    "name": "Out The Window",
+    "type": "secret",
+    "dir": "up"
+  },
+  {
+    "id": "around-the-corner",
+    "name": "Around The Corner",
+    "type": "secret",
+    "dir": "right"
+  },
+  {
+    "id": "push-the-third-stone",
+    "name": "Push The Third Stone",
+    "type": "secret",
+    "dir": "up"
+  },
+  {
+    "id": "beyond-the-pail",
+    "name": "Beyond The Pail",
+    "type": "secret",
+    "dir": "right"
+  },
+  {
+    "id": "amidst-the-plants",
+    "name": "Amidst The Plants",
+    "type": "secret",
+    "dir": "left"
+  },
+  {
+    "id": "at-the-end-of-the-rainbow",
+    "name": "At The End Of The Rainbow",
+    "type": "secret",
+    "dir": "down"
+  }
+]

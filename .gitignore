@@ -1,0 +1,17 @@
+.DS_Store
+__pycache__/
+*.log
+
+# source photos (1.4 GB) and rulebooks: kept locally only
+reference_images/
+images/
+downloads/
+
+# python env and tool outputs
+tools/.venv/
+tools/out/
+
+# app build / test artefacts
+app/node_modules/
+app/dist/
+app/.vitest/

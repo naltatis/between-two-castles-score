@@ -15,13 +15,17 @@ interface Truth {
 
 const CONF = 0.8;
 
+/** longest side the app would scan at (Scan.vue MAX); fixtures are 4000 px */
+const MAX = 4000;
+
 async function load(name: string): Promise<HTMLCanvasElement> {
   const blob = await (await fetch(`/test-fixtures/${name}.jpg`)).blob();
   const bmp = await createImageBitmap(blob);
+  const k = Math.min(1, MAX / Math.max(bmp.width, bmp.height));
   const c = document.createElement("canvas");
-  c.width = bmp.width;
-  c.height = bmp.height;
-  c.getContext("2d")!.drawImage(bmp, 0, 0);
+  c.width = Math.round(bmp.width * k);
+  c.height = Math.round(bmp.height * k);
+  c.getContext("2d")!.drawImage(bmp, 0, 0, c.width, c.height);
   return c;
 }
 
@@ -69,7 +73,11 @@ describe("recognition benchmark", () => {
               ? "ok"
               : (r.throne?.tile ?? "none")
             : "-",
-          method: r.debug?.method ?? "?",
+          method:
+            (r.debug?.method ?? "?") +
+            (r.debug?.timing
+              ? ` loc ${r.debug.timing.locate.toFixed(0)} cls ${r.debug.timing.classify.toFixed(0)} wasm ${r.debug.timing.cv.toFixed(0)}`
+              : ""),
           ms,
           misses: [],
           unsure: [],

@@ -65,6 +65,8 @@ export function loadOrbRefs(): Promise<OrbRefs> {
 }
 
 const NFEAT = 300;
+/** inliers no wrong tile reaches (ponytail: tuned on the benchmark, max wrong seen ≈ 25) */
+const SURE = 60;
 
 export interface Features {
   pts: Float32Array;
@@ -159,15 +161,18 @@ export function verify(
   // candidates come best-first from the thumbnail shortlist; stop early once a clear winner
   // exists (ponytail: 90 inliers is far above anything a wrong tile reaches)
   const scored: { id: string; n: number }[] = [];
+  let best = 0;
   for (const id of candidates) {
-    const n = Math.max(
-      0,
-      ...(refs.byTile.get(id) ?? [])
-        .filter((r) => !exclude || r.src !== exclude)
-        .map((r) => inliers(cv, q, r)),
-    );
+    let n = 0;
+    for (const r of refs.byTile.get(id) ?? []) {
+      if (exclude && r.src === exclude) continue;
+      n = Math.max(n, inliers(cv, q, r));
+      if (n >= SURE) break; // one convincing reference is enough for this tile
+    }
     scored.push({ id, n });
-    if (scored.length >= 6 && Math.max(...scored.map((x) => x.n)) >= 90) break;
+    best = Math.max(best, n);
+    // candidates come best-first from the thumbnail shortlist; a clear winner ends the search
+    if (scored.length >= 3 && best >= SURE) break;
   }
   scored.sort((a, b) => b.n - a.n);
   if (!scored.length) return null;

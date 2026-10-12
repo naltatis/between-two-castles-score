@@ -23,17 +23,53 @@ export interface WorkerCell {
 export interface WorkerResult {
   w: number;
   h: number;
-  /** image pixels the boxes refer to (transferred) */
-  pixels: ArrayBuffer;
+  /** downscaled view of the image the boxes refer to (boxes are in w×h coordinates) */
+  preview: Rgba;
   tilePx: number;
   cells: WorkerCell[];
   throne?: { box: [number, number, number, number]; tile?: string };
   /** which localisation produced the result */
   method: "holes" | "grid";
+  /** ms per stage (benchmark/diagnostics) */
+  timing?: { locate: number; classify: number; cv: number };
 }
 
 const CROP = 256;
 const THUMB = 96;
+
+const PREVIEW = 1280;
+
+/** box-downsample an RGBA image to ow×oh */
+function shrink(src: Rgba, ow: number, oh: number): Rgba {
+  const kx = src.w / ow,
+    ky = src.h / oh;
+  const d = new Uint8ClampedArray(ow * oh * 4);
+  for (let y = 0; y < oh; y++)
+    for (let x = 0; x < ow; x++) {
+      let r = 0,
+        g = 0,
+        b = 0,
+        c = 0;
+      for (let sy = Math.floor(y * ky); sy < Math.floor((y + 1) * ky); sy++)
+        for (let sx = Math.floor(x * kx); sx < Math.floor((x + 1) * kx); sx++) {
+          const i = (sy * src.w + sx) * 4;
+          r += src.d[i]!;
+          g += src.d[i + 1]!;
+          b += src.d[i + 2]!;
+          c++;
+        }
+      const o = (y * ow + x) * 4;
+      d[o] = r / c;
+      d[o + 1] = g / c;
+      d[o + 2] = b / c;
+      d[o + 3] = 255;
+    }
+  return { w: ow, h: oh, d };
+}
+function preview(img: Rgba): Rgba {
+  const k = Math.min(1, PREVIEW / Math.max(img.w, img.h));
+  return shrink(img, Math.round(img.w * k), Math.round(img.h * k));
+}
 
 /** box-downsample an RGBA crop to THUMB px (square crops only) */
 function thumb(src: Rgba): Rgba {
@@ -107,6 +143,8 @@ let cvReady: Promise<unknown> | null = null;
 let orbRefs: Promise<OrbRefs> | null = null;
 
 const SHORTLIST = 32;
+/** wasm matching time of the current photo */
+let cvMs = 0;
 /** inliers needed for full confidence, and the lead over the runner-up */
 const INLIERS_FULL = 60;
 const RATIO_FULL = 2.0;
@@ -135,6 +173,7 @@ function classify(
   if (ctx) {
     // thumbnail shortlist → keypoint verification decides and sets the confidence
     const cands = shortlist(R, crop, SHORTLIST, exclude);
+    const tv = performance.now();
     let v = verify(ctx.cv, ctx.orb, crop, cands, exclude);
     if (v && v.inliers < WEAK) {
       // shortlist missed: the thumbnail is blind to some lighting/framing combos; brute-force
@@ -146,6 +185,7 @@ function classify(
         v = { ...v2, second: Math.max(v2.second, v.inliers) };
       }
     }
+    cvMs += performance.now() - tv;
     if (v) {
       tile = v.tile;
       const ratio = v.inliers / Math.max(1, v.second);
@@ -173,10 +213,15 @@ function runHoles(
   ctx?: { cv: unknown; orb: OrbRefs },
   exclude = "",
 ): WorkerResult | null {
+  const tl = performance.now();
   const loc = locateTiles(img);
   if (!loc || loc.cells.length < 2) return null;
+  const t0 = performance.now();
   const cells = loc.cells.map((c, i) => {
-    progress(`Plättchen erkennen ${i + 1}/${loc.cells.length}`);
+    const per = i ? ((performance.now() - t0) / i / 1000).toFixed(1) : "";
+    progress(
+      `Plättchen erkennen ${i + 1}/${loc.cells.length}${per ? ` · ${per} s/Plättchen` : ""}`,
+    );
     const crop = warpQuad(img, c.quad, CROP);
     return { ...classify(R, ST, crop, c.x, c.y, c.box, ctx, exclude), crop: thumb(crop) };
   });
@@ -184,11 +229,12 @@ function runHoles(
   return {
     w: img.w,
     h: img.h,
-    pixels: img.d.buffer as ArrayBuffer,
+    preview: preview(img),
     tilePx: loc.tilePx,
     cells,
     throne: { box: loc.throne.box, tile: v?.tile },
     method: "holes",
+    timing: { locate: t0 - tl, classify: performance.now() - t0, cv: cvMs },
   };
 }
 
@@ -239,7 +285,7 @@ function runGrid(
   return {
     w: rect.w,
     h: rect.h,
-    pixels: rect.d.buffer as ArrayBuffer,
+    preview: preview(rect),
     tilePx: d.tilePx,
     cells,
     throne,
@@ -250,10 +296,20 @@ function runGrid(
 /** stage report for the UI (also the only diagnostics we get from a phone) */
 const progress = (stage: string) => self.postMessage({ progress: stage });
 
+/** ms for a fixed JS loop: ~10 ms with a JIT, ~500 ms+ in an interpreter (iOS drops the JIT
+ * under memory pressure); reported so a slow phone can be diagnosed from the screen */
+function jsSpeed(): number {
+  const t = performance.now();
+  const a = new Float32Array(1 << 16);
+  let acc = 0;
+  for (let k = 0; k < 200; k++) for (let i = 0; i < a.length; i++) acc += a[i]! += i & 7;
+  return Math.round(performance.now() - t) + (acc === 1 ? 1 : 0);
+}
+
 self.addEventListener(
   "message",
   async (ev: MessageEvent<{ w: number; h: number; pixels: ArrayBuffer; exclude?: string }>) => {
-    progress("Referenzdaten laden");
+    progress(`Referenzdaten laden · JS ${jsSpeed()} ms`);
     refs ??= loadRefs();
     strips ??= loadStrips();
     cvReady ??= loadCv();
@@ -271,11 +327,12 @@ self.addEventListener(
       progress(`OpenCV nicht verfügbar: ${e instanceof Error ? e.message : String(e)}`);
     }
     progress("Plättchen suchen");
+    cvMs = 0;
     const res = runHoles(img, R, ST, ctx, exclude) ?? runGrid(img, R, ST, ctx, exclude);
     if (!res) {
       self.postMessage(null);
       return;
     }
-    self.postMessage(res, [res.pixels]);
+    self.postMessage(res, [res.preview.d.buffer as ArrayBuffer]);
   },
 );

@@ -11,6 +11,7 @@ const emit = defineEmits<{
 const busy = ref(false);
 const error = ref("");
 const MAX = 4000;
+const PREVIEW = 1280;
 
 async function onFile(e: Event) {
   const input = e.target as HTMLInputElement;
@@ -26,8 +27,14 @@ async function onFile(e: Event) {
     canvas.width = Math.round(bmp.width * k);
     canvas.height = Math.round(bmp.height * k);
     canvas.getContext("2d")!.drawImage(bmp, 0, 0, canvas.width, canvas.height);
+    // preview for the next screen: small, the full canvas goes to recognition only
+    const pk = Math.min(1, PREVIEW / Math.max(bmp.width, bmp.height));
+    const pv = document.createElement("canvas");
+    pv.width = Math.round(bmp.width * pk);
+    pv.height = Math.round(bmp.height * pk);
+    pv.getContext("2d")!.drawImage(bmp, 0, 0, pv.width, pv.height);
     bmp.close();
-    emit("photo", { canvas, url: canvas.toDataURL("image/jpeg", 0.85) });
+    emit("photo", { canvas, url: pv.toDataURL("image/jpeg", 0.8) });
   } catch {
     error.value = "Bild konnte nicht gelesen werden.";
   } finally {

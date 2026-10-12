@@ -18,9 +18,9 @@ export interface Recognition {
   cells: RecognizedCell[];
   throne?: { box: [number, number, number, number]; tile?: string };
   imageSize: [number, number];
-  /** rectified photo the boxes refer to (falls back to the original when absent) */
+  /** downscaled (rectified) photo; boxes are in `imageSize` coordinates */
   imageUrl?: string;
-  debug?: { method: string; tilePx: number };
+  debug?: { method: string; tilePx: number; timing?: WorkerResult["timing"] };
 }
 
 let worker: Worker | null = null;
@@ -63,15 +63,20 @@ export async function recognize(
   exclude = "",
   onProgress?: (stage: string) => void,
 ): Promise<Recognition> {
+  const size: [number, number] = [canvas.width, canvas.height];
   const id = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height);
+  // the 12 MP canvas has done its job; phones are tight on memory while the worker runs
+  canvas.width = canvas.height = 0;
   const res = await runWorker(id, exclude, onProgress);
-  if (!res) return { cells: [], imageSize: [canvas.width, canvas.height] };
-  const rect = document.createElement("canvas");
-  rect.width = res.w;
-  rect.height = res.h;
-  rect
-    .getContext("2d")!
-    .putImageData(new ImageData(new Uint8ClampedArray(res.pixels), res.w, res.h), 0, 0);
+  if (!res) return { cells: [], imageSize: size };
+  const pv = document.createElement("canvas");
+  pv.width = res.preview.w;
+  pv.height = res.preview.h;
+  pv.getContext("2d")!.putImageData(
+    new ImageData(new Uint8ClampedArray(res.preview.d), res.preview.w, res.preview.h),
+    0,
+    0,
+  );
   const cells = res.cells.map(({ crop, ...c }) => {
     if (!crop) return c;
     const cv = document.createElement("canvas");
@@ -88,7 +93,7 @@ export async function recognize(
     cells,
     throne: res.throne,
     imageSize: [res.w, res.h],
-    imageUrl: rect.toDataURL("image/jpeg", 0.8),
-    debug: { method: res.method, tilePx: res.tilePx },
+    imageUrl: pv.toDataURL("image/jpeg", 0.8),
+    debug: { method: res.method, tilePx: res.tilePx, timing: res.timing },
   };
 }

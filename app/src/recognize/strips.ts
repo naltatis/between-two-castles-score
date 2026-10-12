@@ -190,8 +190,10 @@ export function identifyVariant(
   for (const t of strips.templates) {
     if (t.kind !== kind) continue;
     const s = ncc(band, t);
-    if (s > best) best = s;
-    bestId = t.id;
+    if (s > best) {
+      best = s;
+      bestId = t.id;
+    }
   }
   return bestId ? { tile: bestId, score: best } : null;
 }

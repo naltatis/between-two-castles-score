@@ -52,3 +52,30 @@ describe("crop dump", () => {
     );
   }
 });
+
+describe("throne dump", () => {
+  it("writes wide throne crops of all fixtures", async () => {
+    const truth: Record<string, unknown> = await (await fetch("/test-fixtures/truth.json")).json();
+    for (const name of Object.keys(truth)) {
+      const id = await load(name);
+      const img = { w: id.width, h: id.height, d: id.data };
+      const loc = locateTiles(img);
+      if (!loc) continue;
+      const W = 768;
+      const crop = warpQuad(img, loc.throne.quad, W, true);
+      const c = document.createElement("canvas");
+      c.width = crop.w;
+      c.height = crop.h;
+      c.getContext("2d")!.putImageData(
+        new ImageData(crop.d as Uint8ClampedArray<ArrayBuffer>, crop.w, crop.h),
+        0,
+        0,
+      );
+      await commands.writeFile(
+        `.vitest/crops/throne_${name}.png`,
+        c.toDataURL("image/png").split(",")[1]!,
+        "base64",
+      );
+    }
+  }, 300_000);
+});

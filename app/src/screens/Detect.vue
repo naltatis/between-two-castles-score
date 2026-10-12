@@ -49,6 +49,13 @@ const throneText = computed(() => {
   return `${r(t.wants)} / ${r(t.wants2)} · ${DECO_LABEL[t.deco as Deco]}`;
 });
 const empty = computed(() => rec.value && !rec.value.cells.length && !rec.value.throne);
+/** one line of diagnostics for phone reports */
+const diag = computed(() => {
+  const t = rec.value?.debug?.timing;
+  if (!t) return "";
+  const [w, h] = rec.value!.imageSize;
+  return `${w}×${h} · ${seconds.value} s · Suche ${(t.locate / 1000).toFixed(1)} s · Erkennen ${(t.classify / 1000).toFixed(1)} s (OpenCV ${(t.cv / 1000).toFixed(1)} s, ${t.brute}× Breitensuche)`;
+});
 const mid = (b: [number, number, number, number]) => [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2];
 /** marker radius in image pixels (~10 px on a 358 px wide display) */
 const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
@@ -157,6 +164,7 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
         Neues Foto
       </button>
       <template v-else>
+        <small v-if="diag" class="diag">{{ diag }}</small>
         <button type="button" class="btn light" :disabled="!rec" @click="rec && emit('apply', rec)">
           Weiter zum Schloss
         </button>
@@ -265,5 +273,11 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
 }
 .foot {
   padding-top: 16px;
+}
+.diag {
+  display: block;
+  padding: 0 20px 8px;
+  font-size: 11px;
+  opacity: 0.6;
 }
 </style>

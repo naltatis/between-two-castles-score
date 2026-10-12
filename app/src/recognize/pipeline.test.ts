@@ -76,7 +76,7 @@ describe("recognition benchmark", () => {
           method:
             (r.debug?.method ?? "?") +
             (r.debug?.timing
-              ? ` loc ${r.debug.timing.locate.toFixed(0)} cls ${r.debug.timing.classify.toFixed(0)} wasm ${r.debug.timing.cv.toFixed(0)}`
+              ? ` loc ${r.debug.timing.locate.toFixed(0)} cls ${r.debug.timing.classify.toFixed(0)} wasm ${r.debug.timing.cv.toFixed(0)} brute ${r.debug.timing.brute}`
               : ""),
           ms,
           misses: [],

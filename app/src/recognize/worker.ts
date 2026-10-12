@@ -30,8 +30,8 @@ export interface WorkerResult {
   throne?: { box: [number, number, number, number]; tile?: string };
   /** which localisation produced the result */
   method: "holes" | "grid";
-  /** ms per stage (benchmark/diagnostics) */
-  timing?: { locate: number; classify: number; cv: number };
+  /** ms per stage (benchmark/diagnostics) + how often the shortlist missed and all tiles were tried */
+  timing?: { locate: number; classify: number; cv: number; brute: number };
 }
 
 const CROP = 256;
@@ -143,8 +143,9 @@ let cvReady: Promise<unknown> | null = null;
 let orbRefs: Promise<OrbRefs> | null = null;
 
 const SHORTLIST = 32;
-/** wasm matching time of the current photo */
+/** wasm matching time of the current photo, and brute-force fallbacks */
 let cvMs = 0;
+let brute = 0;
 /** inliers needed for full confidence, and the lead over the runner-up */
 const INLIERS_FULL = 60;
 const RATIO_FULL = 2.0;
@@ -178,6 +179,7 @@ function classify(
     if (v && v.inliers < WEAK) {
       // shortlist missed: the thumbnail is blind to some lighting/framing combos; brute-force
       // the rest (≈1 s once in a while is cheaper than a wrong read)
+      brute++;
       const rest = [...ctx.orb.byTile.keys()].filter((id) => !cands.includes(id));
       const v2 = verify(ctx.cv, ctx.orb, crop, rest, exclude);
       if (v2 && v2.inliers > v.inliers) {
@@ -234,7 +236,7 @@ function runHoles(
     cells,
     throne: { box: loc.throne.box, tile: v?.tile },
     method: "holes",
-    timing: { locate: t0 - tl, classify: performance.now() - t0, cv: cvMs },
+    timing: { locate: t0 - tl, classify: performance.now() - t0, cv: cvMs, brute },
   };
 }
 
@@ -328,6 +330,7 @@ self.addEventListener(
     }
     progress("Plättchen suchen");
     cvMs = 0;
+    brute = 0;
     const res = runHoles(img, R, ST, ctx, exclude) ?? runGrid(img, R, ST, ctx, exclude);
     if (!res) {
       self.postMessage(null);

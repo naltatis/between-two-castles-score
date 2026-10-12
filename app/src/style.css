@@ -34,10 +34,15 @@ body {
   margin: 0;
   min-height: 100%;
 }
+html {
+  /* the canvas colour shows behind the iOS status bar (and on overscroll): same as the header */
+  background: var(--head);
+}
 body {
   font-family: var(--font-b);
   color: var(--text);
   background: #dfe3d4;
+  overscroll-behavior-y: none;
   -webkit-font-smoothing: antialiased;
   /* no double-tap zoom in the installed app */
   touch-action: manipulation;

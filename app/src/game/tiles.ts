@@ -1,7 +1,7 @@
 import type { Tile } from "./types";
 
-// ponytail: partial database — rulebook example tiles, specialty rooms and the 8 throne rooms.
-// The full ~230 tiles get transcribed from the Phase 1 photos; ids are kebab-case English names.
+// 220 room tiles from data/tiles.json (built by tools/build_tiles.py) plus the 8 throne rooms below;
+// ids are kebab-case English names.
 import data from "../data/tiles.json";
 
 // 8 throne rooms (spots relative to the left half; (1,1) = above the right half, (2,0) = right of the room)

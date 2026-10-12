@@ -1,7 +1,0 @@
-*
-!app/
-!docker/
-app/node_modules
-app/dist
-app/.vitest
-app/test-fixtures

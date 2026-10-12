@@ -5,7 +5,7 @@
  * coordinates. Tiles may be rotated a few degrees or sit off the grid line; nothing downstream
  * depends on a global grid. Each tile is then warped from its own quad to an upright square.
  */
-import type { Rgba } from "./detect";
+import type { Rgba } from "./types";
 
 export type Pt = [number, number];
 export interface Region {

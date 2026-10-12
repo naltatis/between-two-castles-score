@@ -1,10 +1,10 @@
 /// <reference lib="webworker" />
 /** Recognition pipeline off the main thread: locate tiles → warp each to an upright crop → identify. */
-import { detect, holeForCell, type Rgba } from "./detect";
 import { confidence, identify, loadRefs, shortlist, type Refs } from "./identify";
 import { locateTiles, warpQuad } from "./locate";
 import { jsSpeed } from "./probe";
 import { identifyVariant, loadStrips, type Strips } from "./strips";
+import type { Rgba } from "./types";
 import { loadCv, loadOrbRefs, verify, type OrbRefs } from "./verify";
 
 export interface WorkerCell {
@@ -29,8 +29,7 @@ export interface WorkerResult {
   tilePx: number;
   cells: WorkerCell[];
   throne?: { box: [number, number, number, number]; tile?: string };
-  /** which localisation produced the result */
-  method: "holes" | "grid";
+  method: "holes";
   /** ms per stage (benchmark/diagnostics) + how often the shortlist missed and all tiles were tried */
   timing?: { locate: number; classify: number; cv: number; brute: number; js: number };
 }
@@ -98,44 +97,6 @@ function thumb(src: Rgba): Rgba {
       d[o + 3] = 255;
     }
   return { w: n, h: n, d };
-}
-
-/** pixels of `box` rotated by rot×90° counter-clockwise (numpy rot90 convention) so castle-up is up */
-export function cropRgba(img: Rgba, box: [number, number, number, number], rot: number): Rgba {
-  const [l, t, r, b] = box;
-  const w = r - l,
-    h = b - t;
-  const ow = rot % 2 ? h : w,
-    oh = rot % 2 ? w : h;
-  const d = new Uint8ClampedArray(ow * oh * 4);
-  for (let y = 0; y < h; y++)
-    for (let x = 0; x < w; x++) {
-      let ox: number, oy: number;
-      switch (rot) {
-        case 1:
-          ox = y;
-          oy = w - 1 - x;
-          break;
-        case 2:
-          ox = w - 1 - x;
-          oy = h - 1 - y;
-          break;
-        case 3:
-          ox = h - 1 - y;
-          oy = x;
-          break;
-        default:
-          ox = x;
-          oy = y;
-      }
-      const si = ((t + y) * img.w + l + x) * 4,
-        di = (oy * ow + ox) * 4;
-      d[di] = img.d[si]!;
-      d[di + 1] = img.d[si + 1]!;
-      d[di + 2] = img.d[si + 2]!;
-      d[di + 3] = 255;
-    }
-  return { w: ow, h: oh, d };
 }
 
 let refs: Promise<Refs> | null = null;
@@ -209,7 +170,7 @@ function classify(
   return { x, y, box, tile: tile || undefined, confidence: conf, score: m.score, margin: m.margin };
 }
 
-/** per-tile quads → upright crops (primary path) */
+/** per-tile quads → upright crops */
 function runHoles(
   img: Rgba,
   R: Refs,
@@ -223,9 +184,7 @@ function runHoles(
   const t0 = performance.now();
   const cells = loc.cells.map((c, i) => {
     const per = i ? ((performance.now() - t0) / i / 1000).toFixed(1) : "";
-    progress(
-      `Plättchen erkennen ${i + 1}/${loc.cells.length}${per ? ` · ${per} s/Plättchen` : ""}`,
-    );
+    progress(`Plättchen ${i + 1}/${loc.cells.length}${per ? ` (${per} s/P)` : ""}`);
     const crop = warpQuad(img, c.quad, CROP);
     return { ...classify(R, ST, crop, c.x, c.y, c.box, ctx, exclude), crop: thumb(crop) };
   });
@@ -239,61 +198,6 @@ function runHoles(
     throne: { box: loc.throne.box, tile: v?.tile },
     method: "holes",
     timing: { locate: t0 - tl, classify: performance.now() - t0, cv: cvMs, brute, js },
-  };
-}
-
-/** global grid + axis-aligned crops (fallback for photos where the rings don't segment) */
-function runGrid(
-  img: Rgba,
-  R: Refs,
-  ST: Strips,
-  ctx?: { cv: unknown; orb: OrbRefs },
-  exclude = "",
-): WorkerResult | null {
-  const d = detect(img);
-  if (!d) return null;
-  const rect = d.image;
-  let throneBox: [number, number, number, number] | undefined;
-  const cells: WorkerCell[] = [];
-  for (const c of d.cells) {
-    if (c.y === 0 && (c.x === 0 || c.x === 1)) {
-      throneBox = throneBox
-        ? [
-            Math.min(throneBox[0], c.box[0]),
-            Math.min(throneBox[1], c.box[1]),
-            Math.max(throneBox[2], c.box[2]),
-            Math.max(throneBox[3], c.box[3]),
-          ]
-        : [...c.box];
-      continue;
-    }
-    const hole = holeForCell(rect, c.box, d.tilePx);
-    let art: [number, number, number, number];
-    if (hole) art = [hole.x, hole.y, hole.x + hole.w, hole.y + hole.h];
-    else {
-      const m = ((c.box[2] - c.box[0]) * 0.11) | 0;
-      art = [c.box[0] + m, c.box[1] + m, c.box[2] - m, c.box[3] - m];
-    }
-    const crop = cropRgba(rect, art, d.rot);
-    cells.push({ ...classify(R, ST, crop, c.x, c.y, c.box, ctx, exclude), crop: thumb(crop) });
-  }
-  let throne: WorkerResult["throne"];
-  if (throneBox) {
-    const hole = holeForCell(rect, throneBox, d.tilePx, true);
-    const art: [number, number, number, number] = hole
-      ? [hole.x, hole.y, hole.x + hole.w, hole.y + hole.h]
-      : throneBox;
-    const v = identifyVariant(ST, cropRgba(rect, art, d.rot), "throne");
-    throne = { box: throneBox, tile: v?.tile };
-  }
-  return {
-    w: rect.w,
-    h: rect.h,
-    preview: preview(rect),
-    tilePx: d.tilePx,
-    cells,
-    throne,
-    method: "grid",
   };
 }
 
@@ -324,7 +228,7 @@ self.addEventListener(
     progress("Plättchen suchen");
     cvMs = 0;
     brute = 0;
-    const res = runHoles(img, R, ST, ctx, exclude) ?? runGrid(img, R, ST, ctx, exclude);
+    const res = runHoles(img, R, ST, ctx, exclude);
     if (!res) {
       self.postMessage(null);
       return;

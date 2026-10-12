@@ -6,7 +6,7 @@
  * is a pre-selection the user confirms, not a sure read.
  */
 import { dataUrl } from "./data";
-import type { Rgba } from "./detect";
+import type { Rgba } from "./types";
 
 const HS = 24; // strip height in px after normalisation
 

@@ -54,7 +54,12 @@ const diag = computed(() => {
   const t = rec.value?.debug?.timing;
   if (!t) return "";
   const [w, h] = rec.value!.imageSize;
-  return `JS Haupt ${rec.value!.debug?.jsMain ?? "?"} ms / Worker ${t.js} ms · ${w}×${h} · ${seconds.value} s · Suche ${(t.locate / 1000).toFixed(1)} s · Erkennen ${(t.classify / 1000).toFixed(1)} s (OpenCV ${(t.cv / 1000).toFixed(1)} s, ${t.brute}× Breitensuche)`;
+  const s = (ms: number) => `${(ms / 1000).toFixed(1)} s`;
+  return (
+    `${w}×${h} · ${seconds.value} s · Suche ${s(t.locate)} · Erkennen ${s(t.classify)} · OpenCV ${s(t.cv)}` +
+    (t.brute ? ` · ${t.brute}× Breitensuche` : "") +
+    ` · JS ${rec.value!.debug?.jsMain ?? "?"}/${t.js} ms`
+  );
 });
 const mid = (b: [number, number, number, number]) => [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2];
 /** marker radius in image pixels (~10 px on a 358 px wide display) */

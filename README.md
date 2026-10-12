@@ -38,9 +38,8 @@ cd tools && python3 -m venv .venv && .venv/bin/pip install -r requirements.txt r
 
 ## Deployment
 
-`Dockerfile`: build the app, serve `dist/` with stock nginx. CI (`.github/workflows/ci.yml`) runs check, unit tests
-and build on every push and publishes `ghcr.io/naltatis/between-two-castles-score:latest` from `main`.
+GitHub Pages, from `.github/workflows/ci.yml` on every push to `main` after check, unit tests and build:
+https://naltatis.github.io/between-two-castles-score/
 
-- Local: `docker compose up -d --build` → http://localhost:8090
-- Unraid: add a container from `ghcr.io/naltatis/between-two-castles-score:latest`, map port 80 to a free host port.
-  Over plain http the camera input and scanning work; only the offline cache (service worker) needs https.
+Phones need https: iOS 26 Safari runs plain-http pages without its JIT, which makes recognition ~25× slower,
+and the offline cache (service worker) only registers on https.

@@ -11,11 +11,24 @@ const emit = defineEmits<{ back: []; apply: [r: Recognition] }>();
 
 const rec = ref<Recognition | null>(null);
 const failed = ref(false);
+/** error text when recognition crashed (device/browser problem, not a photo problem) */
+const error = ref("");
+const stage = ref("Foto übergeben");
+const seconds = ref(0);
 onMounted(async () => {
+  const t0 = performance.now();
+  const tick = setInterval(
+    () => (seconds.value = Math.round((performance.now() - t0) / 1000)),
+    500,
+  );
   try {
-    rec.value = await recognize(props.photo.canvas);
-  } catch {
+    rec.value = await recognize(props.photo.canvas, "", (s) => (stage.value = s));
+  } catch (e) {
     failed.value = true;
+    error.value = e instanceof Error ? `${e.name}: ${e.message}` : String(e);
+    console.error("recognition failed", e);
+  } finally {
+    clearInterval(tick);
   }
 });
 
@@ -91,13 +104,18 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
       </div>
     </div>
 
-    <div v-if="!rec && !failed" class="card wait">Erkennung läuft…</div>
+    <div v-if="!rec && !failed" class="card wait">
+      Erkennung läuft… <small>{{ stage }} · {{ seconds }} s</small>
+    </div>
     <div v-else-if="failed || empty" class="card">
       <div class="row">
         <span class="ic q">?</span>
         <div>
-          <b>Kein Schloss erkannt</b>
-          <small>Ganzes Schloss von oben, Kanten parallel zum Bildrand – dann neues Foto</small>
+          <b>{{ error ? "Erkennung abgebrochen" : "Kein Schloss erkannt" }}</b>
+          <small v-if="error">{{ error }}</small>
+          <small v-else
+            >Ganzes Schloss von oben, Kanten parallel zum Bildrand – dann neues Foto</small
+          >
         </div>
       </div>
     </div>

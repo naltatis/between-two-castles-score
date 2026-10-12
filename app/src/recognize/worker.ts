@@ -176,7 +176,8 @@ function runHoles(
 ): WorkerResult | null {
   const loc = locateTiles(img);
   if (!loc || loc.cells.length < 2) return null;
-  const cells = loc.cells.map((c) => {
+  const cells = loc.cells.map((c, i) => {
+    progress(`Plättchen erkennen ${i + 1}/${loc.cells.length}`);
     const crop = warpQuad(img, c.quad, CROP);
     return { ...classify(R, ST, crop, c.x, c.y, c.box, ctx, exclude), crop: thumb(crop) };
   });
@@ -247,12 +248,16 @@ function runGrid(
   };
 }
 
+/** stage report for the UI (also the only diagnostics we get from a phone) */
+const progress = (stage: string) => self.postMessage({ progress: stage });
+
 self.addEventListener(
   "message",
   async (
     ev: MessageEvent<{ w: number; h: number; pixels: ArrayBuffer; base: string; exclude?: string }>,
   ) => {
     setDataBase(ev.data.base);
+    progress("Referenzdaten laden");
     refs ??= loadRefs();
     strips ??= loadStrips();
     cvReady ??= loadCv();
@@ -261,12 +266,15 @@ self.addEventListener(
     const img: Rgba = { w, h, d: new Uint8ClampedArray(pixels) };
     const R = await refs;
     const ST = await strips;
+    progress("OpenCV starten");
     let ctx: { cv: unknown; orb: OrbRefs } | undefined;
     try {
       ctx = { cv: await cvReady, orb: await orbRefs };
     } catch (e) {
       console.warn("keypoint verification unavailable", e);
+      progress(`OpenCV nicht verfügbar: ${e instanceof Error ? e.message : String(e)}`);
     }
+    progress("Plättchen suchen");
     const res = runHoles(img, R, ST, ctx, exclude) ?? runGrid(img, R, ST, ctx, exclude);
     if (!res) {
       self.postMessage(null);

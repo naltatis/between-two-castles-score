@@ -25,11 +25,19 @@ export interface Recognition {
 
 let worker: Worker | null = null;
 
-function runWorker(id: ImageData, exclude = ""): Promise<WorkerResult | null> {
+function runWorker(
+  id: ImageData,
+  exclude = "",
+  onProgress?: (stage: string) => void,
+): Promise<WorkerResult | null> {
   worker ??= new Worker(new URL("./worker.ts", import.meta.url), { type: "module" });
   const w = worker;
   return new Promise((resolve, reject) => {
-    const onMessage = (ev: MessageEvent<WorkerResult | null>) => {
+    const onMessage = (ev: MessageEvent<WorkerResult | null | { progress: string }>) => {
+      if (ev.data && "progress" in ev.data) {
+        onProgress?.(ev.data.progress);
+        return;
+      }
       cleanup();
       resolve(ev.data);
     };
@@ -51,9 +59,13 @@ function runWorker(id: ImageData, exclude = ""): Promise<WorkerResult | null> {
 }
 
 /** `exclude`: benchmark only — ignore references harvested from this photo */
-export async function recognize(canvas: HTMLCanvasElement, exclude = ""): Promise<Recognition> {
+export async function recognize(
+  canvas: HTMLCanvasElement,
+  exclude = "",
+  onProgress?: (stage: string) => void,
+): Promise<Recognition> {
   const id = canvas.getContext("2d")!.getImageData(0, 0, canvas.width, canvas.height);
-  const res = await runWorker(id, exclude);
+  const res = await runWorker(id, exclude, onProgress);
   if (!res) return { cells: [], imageSize: [canvas.width, canvas.height] };
   const rect = document.createElement("canvas");
   rect.width = res.w;

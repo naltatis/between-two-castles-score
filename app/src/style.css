@@ -34,14 +34,12 @@ body {
   margin: 0;
   min-height: 100%;
 }
-html {
-  /* the canvas colour shows behind the iOS status bar (and on overscroll): same as the header */
-  background: var(--head);
-}
 body {
   font-family: var(--font-b);
   color: var(--text);
-  background: #dfe3d4;
+  /* iOS 26 tints the status bar and home-indicator area from the body colour (theme-color is
+     ignored), so the body must be the page colour, not a darker frame */
+  background: var(--bg);
   overscroll-behavior-y: none;
   -webkit-font-smoothing: antialiased;
   /* no double-tap zoom in the installed app */
@@ -88,6 +86,23 @@ button {
 .screen.dark {
   background: var(--dark);
   color: var(--head-text);
+}
+.screen.dark .bar {
+  background: var(--dark);
+}
+/* iOS 26 home-screen apps: the status bar takes the colour of a fixed element at the top edge
+   (≥ 6 px high, ≥ 80 % wide, within 4 px of the top) and stays solid and unblurred; without one
+   it blurs the body colour over the header. Each header casts such a strip in its own colour. */
+.head::before,
+.bar::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: env(safe-area-inset-top, 0px);
+  background: inherit;
+  z-index: 5;
 }
 .head {
   background: var(--head);

@@ -45,7 +45,8 @@ function runWorker(id: ImageData, exclude = ""): Promise<WorkerResult | null> {
     w.addEventListener("message", onMessage);
     w.addEventListener("error", onError);
     const pixels = id.data.buffer as ArrayBuffer;
-    w.postMessage({ w: id.width, h: id.height, pixels, exclude }, [pixels]);
+    const base = new URL(import.meta.env.BASE_URL, document.baseURI).href;
+    w.postMessage({ w: id.width, h: id.height, pixels, base, exclude }, [pixels]);
   });
 }
 

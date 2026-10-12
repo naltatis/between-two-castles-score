@@ -5,6 +5,7 @@
  * in a colour-weighted YCbCr space. ponytail: 92 % leave-one-out on the reference sheets; the result
  * is a pre-selection the user confirms, not a sure read.
  */
+import { dataUrl } from "./data";
 import type { Rgba } from "./detect";
 
 const HS = 24; // strip height in px after normalisation
@@ -25,7 +26,7 @@ let loading: Promise<Strips> | null = null;
 export function loadStrips(): Promise<Strips> {
   loading ??= (async () => {
     const [meta, bin] = await Promise.all([
-      fetch(`${import.meta.env.BASE_URL}strips.json`).then(
+      fetch(dataUrl("strips.json")).then(
         (r) =>
           r.json() as Promise<{
             entries: {
@@ -37,7 +38,7 @@ export function loadStrips(): Promise<Strips> {
             }[];
           }>,
       ),
-      fetch(`${import.meta.env.BASE_URL}strips.bin`).then((r) => r.arrayBuffer()),
+      fetch(dataUrl("strips.bin")).then((r) => r.arrayBuffer()),
     ]);
     const q = new Int8Array(bin);
     return {

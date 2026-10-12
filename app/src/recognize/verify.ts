@@ -5,6 +5,8 @@
  * homography; the score is the inlier count. Invariant to rotation, scale, moderate perspective
  * and lighting — exactly what the thumbnail nearest-neighbour is not.
  */
+import cvModule from "@techstark/opencv-js";
+import { dataUrl } from "./data";
 import type { Rgba } from "./detect";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -12,9 +14,11 @@ type CV = any;
 
 let cvPromise: Promise<CV> | null = null;
 export function loadCv(): Promise<CV> {
+  // Static import on purpose: the package is CommonJS and exports a Promise. The bundler's ESM
+  // shim builds the namespace with Object.create(Promise.prototype), and a dynamic import() would
+  // await that fake thenable and throw "then called on incompatible receiver".
   cvPromise ??= (async () => {
-    const mod = await import("@techstark/opencv-js");
-    const cv = (mod as { default?: unknown }).default ?? mod;
+    const cv: unknown = cvModule;
     // the module exports a promise-like until the wasm is ready
     if (typeof (cv as { then?: unknown }).then === "function") return await (cv as Promise<CV>);
     if ((cv as { ready?: Promise<unknown> }).ready) await (cv as { ready: Promise<unknown> }).ready;
@@ -38,14 +42,14 @@ let refsPromise: Promise<OrbRefs> | null = null;
 export function loadOrbRefs(): Promise<OrbRefs> {
   refsPromise ??= (async () => {
     const [meta, bin] = await Promise.all([
-      fetch(`${import.meta.env.BASE_URL}orb.json`).then(
+      fetch(dataUrl("orb.json")).then(
         (r) =>
           r.json() as Promise<{
             size: number;
             entries: { id: string; n: number; offset: number; src?: string }[];
           }>,
       ),
-      fetch(`${import.meta.env.BASE_URL}refs.orb`).then((r) => r.arrayBuffer()),
+      fetch(dataUrl("refs.orb")).then((r) => r.arrayBuffer()),
     ]);
     const byTile = new Map<string, OrbRef[]>();
     for (const e of meta.entries) {

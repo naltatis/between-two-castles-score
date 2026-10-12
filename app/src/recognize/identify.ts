@@ -4,6 +4,7 @@
  * ponytail: 97.9% leave-one-photo-out on the reference sheets; upgrade to a trained classifier if
  * real castle photos fall clearly below that.
  */
+import { dataUrl } from "./data";
 
 const SIZE = 16;
 const DIM = SIZE * SIZE * 3;
@@ -20,10 +21,10 @@ let refsPromise: Promise<Refs> | null = null;
 export function loadRefs(): Promise<Refs> {
   refsPromise ??= (async () => {
     const [meta, bin] = await Promise.all([
-      fetch(`${import.meta.env.BASE_URL}refs.json`).then(
+      fetch(dataUrl("refs.json")).then(
         (r) => r.json() as Promise<{ ids: string[]; srcs?: string[] }>,
       ),
-      fetch(`${import.meta.env.BASE_URL}refs.bin`).then((r) => r.arrayBuffer()),
+      fetch(dataUrl("refs.bin")).then((r) => r.arrayBuffer()),
     ]);
     const q = new Int8Array(bin);
     const n = meta.ids.length;

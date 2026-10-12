@@ -39,6 +39,14 @@ body {
   color: var(--text);
   background: #dfe3d4;
   -webkit-font-smoothing: antialiased;
+  /* no double-tap zoom in the installed app */
+  touch-action: manipulation;
+}
+/* iOS keeps a 16 px minimum, below that it zooms into focused fields */
+input,
+select,
+textarea {
+  font-size: 16px;
 }
 #app {
   max-width: 480px;
@@ -79,7 +87,7 @@ button {
 .head {
   background: var(--head);
   color: var(--head-text);
-  padding: 20px 20px 16px;
+  padding: calc(20px + env(safe-area-inset-top)) 20px 16px;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -96,7 +104,7 @@ button {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 16px 12px 8px;
+  padding: calc(16px + env(safe-area-inset-top)) 12px 8px;
 }
 .bar.solid {
   background: var(--head);
@@ -153,7 +161,7 @@ button {
   flex: 1;
 }
 .foot {
-  padding: 12px 20px 24px;
+  padding: 12px 20px calc(24px + env(safe-area-inset-bottom));
   display: flex;
   flex-direction: column;
   gap: 10px;

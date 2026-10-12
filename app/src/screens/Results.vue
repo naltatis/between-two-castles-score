@@ -100,7 +100,7 @@ const tieNote = computed(() => {
 
 <style scoped>
 .head.big {
-  padding: 12px 20px 24px;
+  padding: calc(12px + env(safe-area-inset-top)) 20px 24px;
   gap: 14px;
 }
 .row {

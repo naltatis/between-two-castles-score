@@ -251,7 +251,7 @@ const list = computed<Tile[]>(() => {
   flex: none;
   display: flex;
   gap: 8px;
-  padding: 8px 12px 16px;
+  padding: 8px 12px calc(16px + env(safe-area-inset-bottom));
   border-top: 1px solid var(--border);
 }
 .bottom .btn {

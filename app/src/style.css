@@ -13,6 +13,9 @@
   --cta: #24372b;
   --cta-text: #f4f1e4;
   --rail: #c2c9b2;
+  /* castle board behind the grid: dark enough for the cream stone bases to stand out */
+  --board: #c5ccb4;
+  --board-line: #a3ac8f;
   --dot: #24372b;
   --dot-text: #e9c46a;
   --sel: #f5e8c4;
@@ -25,6 +28,7 @@
   --orange: #e0621c;
   --font-h: Cinzel, Georgia, serif;
   --font-b: Figtree, system-ui, sans-serif;
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 * {
   box-sizing: border-box;
@@ -194,21 +198,25 @@ button {
   gap: 10px;
   height: 56px;
   border: 0;
-  border-radius: 14px;
+  border-radius: 16px;
   background: var(--cta);
   color: #fff;
   font-weight: 700;
   font-size: 18px;
   text-decoration: none;
   width: 100%;
+  transition: transform 140ms var(--spring);
+}
+.btn:active:not(:disabled) {
+  transform: scale(0.96);
 }
 .btn.light {
   background: var(--head-text);
   color: var(--dark);
 }
 .btn.secondary {
-  height: 44px;
-  border-radius: 12px;
+  height: 46px;
+  border-radius: 14px;
   background: transparent;
   border: 1.5px solid var(--border);
   color: inherit;
@@ -238,4 +246,138 @@ button {
 .btn:disabled {
   opacity: 0.5;
   cursor: default;
+}
+/* motion (Feinschliff): screens opt in per element with `animation: <name> …` */
+@keyframes pop {
+  0% {
+    opacity: 0;
+    transform: scale(0.4) translateY(8px);
+  }
+  65% {
+    opacity: 1;
+    transform: scale(1.08);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+}
+@keyframes fade {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes sheet {
+  0% {
+    transform: translateY(100%);
+  }
+  75% {
+    transform: translateY(-8px);
+  }
+  100% {
+    transform: none;
+  }
+}
+@keyframes grow {
+  from {
+    transform: scaleX(0);
+  }
+}
+@keyframes sweepY {
+  0%,
+  100% {
+    top: 10%;
+  }
+  50% {
+    top: 88%;
+  }
+}
+@keyframes sweepX {
+  from {
+    left: -6%;
+    opacity: 1;
+  }
+  90% {
+    opacity: 1;
+  }
+  to {
+    left: 104%;
+    opacity: 0;
+  }
+}
+@keyframes breathe {
+  50% {
+    transform: scale(0.95);
+  }
+}
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 0.55;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.12);
+  }
+}
+@keyframes wiggle {
+  0%,
+  70%,
+  100% {
+    transform: rotate(0);
+  }
+  76% {
+    transform: rotate(-14deg);
+  }
+  82% {
+    transform: rotate(12deg);
+  }
+  88% {
+    transform: rotate(-7deg);
+  }
+  94% {
+    transform: rotate(4deg);
+  }
+}
+@keyframes ring {
+  0% {
+    box-shadow: 0 0 0 0 rgba(224, 98, 28, 0.55);
+  }
+  100% {
+    box-shadow: 0 0 0 9px rgba(224, 98, 28, 0);
+  }
+}
+@keyframes boxin {
+  from {
+    opacity: 0;
+    transform: scale(1.35);
+  }
+}
+@keyframes bob {
+  50% {
+    transform: translateY(-4px);
+  }
+}
+@keyframes shine {
+  from {
+    transform: translateX(-120%) skewX(-18deg);
+  }
+  to {
+    transform: translateX(220%) skewX(-18deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+  }
 }

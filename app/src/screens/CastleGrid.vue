@@ -3,8 +3,10 @@ import { computed, ref } from "vue";
 import Glyph from "../components/Glyph.vue";
 import Grid from "../components/Grid.vue";
 import Icon from "../components/Icon.vue";
-import TileCard from "../components/Tile.vue";
+import Stone from "../components/Stone.vue";
 import TilePicker from "../components/TilePicker.vue";
+import { useCountUp } from "../countUp";
+import { scoreCastle } from "../game/score";
 import { TILE_LIST, TILES } from "../game/tiles";
 import type { Castle, CastleScore, Category, TileType } from "../game/types";
 import { DECO_LABEL, ruleDe, TYPE_COLOR, TYPE_LABEL } from "../icons";
@@ -16,7 +18,10 @@ const props = defineProps<{
   review: string[];
   /** photo crop per cell ("x,y"), when the castle was scanned in this session */
   crops?: Record<string, string>;
+  /** neighbouring castles, for scoring candidates in the picker */
+  neighbours: Castle[];
 }>();
+const total = useCountUp(() => props.score.total, 400, 1500);
 const emit = defineEmits<{ back: []; next: []; "update:review": [keys: string[]] }>();
 
 const THRONES = TILE_LIST.filter((t) => t.type === "throne");
@@ -73,6 +78,15 @@ function place(id: string) {
   else props.castle.tiles.push({ ...pick.value!, tile: id });
   settle(pick.value!.x, pick.value!.y);
   pick.value = null;
+}
+/** what a candidate tile would score on the picked cell, and how it changes the castle total */
+function preview(id: string) {
+  const i = pickIndex.value;
+  const tiles = props.castle.tiles.map((p) => ({ ...p }));
+  if (i >= 0) tiles[i]!.tile = id;
+  else tiles.push({ ...pick.value!, tile: id });
+  const s = scoreCastle({ ...props.castle, tiles }, { neighbours: props.neighbours });
+  return { points: s.perTile[i >= 0 ? i : tiles.length - 1]!, delta: s.total - props.score.total };
 }
 function remove() {
   props.castle.tiles.splice(pickIndex.value, 1);
@@ -136,12 +150,12 @@ const stats = computed(() => {
         <div class="h title">{{ title }}</div>
         <div class="sub">
           {{ castle.tiles.length }} Plättchen<template v-if="review.length">
-            · {{ review.length }} zu prüfen</template
+            · {{ review.length }} zum Nachschauen</template
           >
         </div>
       </div>
       <div class="total">
-        <b class="num">{{ score.total }}</b
+        <b class="num">{{ total }}</b
         ><small>Punkte</small>
       </div>
     </div>
@@ -164,16 +178,20 @@ const stats = computed(() => {
       </label>
 
       <div v-if="stats.length" class="legend">
-        <div class="lhead">
-          <span class="h">Punkte nach Raumtyp</span>
-          <span>{{ score.total }} Punkte</span>
-        </div>
-        <div v-for="s in stats" :key="s.key" class="stat">
+        <div class="lhead h">Punkte nach Raumtyp</div>
+        <div v-for="(s, i) in stats" :key="s.key" class="stat">
           <span class="ico" :style="{ color: s.color }"
             ><Glyph v-if="s.type" :name="s.type" :size="12"
           /></span>
           <span class="lbl">{{ s.label }}</span>
-          <span class="track"><span :style="{ width: s.width, background: s.color }" /></span>
+          <span class="track"
+            ><span
+              :style="{
+                width: s.width,
+                background: s.color,
+                animationDelay: `${1100 + i * 70}ms`,
+              }"
+          /></span>
           <b class="num">{{ s.value }}</b>
         </div>
       </div>
@@ -182,7 +200,7 @@ const stats = computed(() => {
         <div class="chead">
           <span class="q">?</span>
           <span
-            >Unsicher erkannt · {{ reviewTotal - review.length + 1 }} von {{ reviewTotal }}</span
+            >Kurz nachgeschaut · {{ reviewTotal - review.length + 1 }} von {{ reviewTotal }}</span
           >
         </div>
         <div class="cbody">
@@ -193,8 +211,10 @@ const stats = computed(() => {
             alt="Foto des Felds"
           />
           <div class="cardbox">
-            <TileCard v-if="current.tile" :tile="current.tile" :points="score.perTile[current.i]" />
-            <div v-else class="nocard">?</div>
+            <Stone
+              :tile="current.tile"
+              :points="current.tile ? score.perTile[current.i] : undefined"
+            />
           </div>
           <div class="ctext">
             <template v-if="current.tile">
@@ -204,9 +224,8 @@ const stats = computed(() => {
                 }}<template v-if="current.tile.deco">
                   · {{ DECO_LABEL[current.tile.deco] }}</template
                 >
-                <br />{{ ruleDe(current.tile) }}
+                · {{ ruleDe(current.tile) }}
               </small>
-              <b class="pts">{{ score.perTile[current.i] }} Punkte</b>
             </template>
             <template v-else>
               <b>Nicht erkannt</b>
@@ -220,7 +239,7 @@ const stats = computed(() => {
         <div class="cbtns">
           <template v-if="current.tile">
             <button type="button" class="ok" @click="settle(current.x, current.y)">
-              <Icon name="check" :size="18" :width="2.5" />Stimmt
+              <Icon name="check" :size="18" :width="2.5" />Passt
             </button>
             <button type="button" class="alt" @click="pick = { x: current.x, y: current.y }">
               Anderes Plättchen
@@ -258,6 +277,7 @@ const stats = computed(() => {
       v-if="pick"
       :current="pickIndex >= 0 ? castle.tiles[pickIndex]!.tile : undefined"
       :photo="crops?.[`${pick.x},${pick.y}`]"
+      :preview="preview"
       @select="place"
       @remove="remove"
       @close="pick = null"
@@ -268,12 +288,13 @@ const stats = computed(() => {
 <style scoped>
 .body {
   flex: 1;
-  padding: 12px 12px 0;
+  padding: 14px 12px 0;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 14px;
 }
 .throne {
+  animation: rise 450ms ease-out 900ms both;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -290,33 +311,29 @@ const stats = computed(() => {
   height: 40px;
   padding: 0 10px;
   border: 1.5px solid var(--border);
-  border-radius: 10px;
+  border-radius: 12px;
   background: #fff;
   color: var(--text);
   font-weight: 600;
 }
 .legend {
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 5px 16px;
   padding: 0 2px;
+  animation: rise 450ms ease-out 1000ms both;
 }
 .lhead {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  font-size: 11px;
-  color: var(--muted);
-  padding-bottom: 2px;
-}
-.lhead .h {
+  grid-column: 1 / -1;
   font-size: 12px;
+  color: var(--muted);
+  padding-bottom: 1px;
 }
 .stat {
   display: flex;
   align-items: center;
   gap: 6px;
-  height: 14px;
+  height: 15px;
   font-size: 11px;
 }
 .ico {
@@ -325,7 +342,7 @@ const stats = computed(() => {
   flex: none;
 }
 .lbl {
-  width: 62px;
+  width: 58px;
   flex: none;
   color: var(--muted);
   white-space: nowrap;
@@ -341,17 +358,20 @@ const stats = computed(() => {
 }
 .track span {
   border-radius: 4px;
+  transform-origin: left;
+  animation: grow 700ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
 .stat b {
-  width: 34px;
+  width: 16px;
   flex: none;
   text-align: right;
 }
 .confirm {
   background: #fff;
   border: 2px solid var(--orange);
-  border-radius: 14px;
+  border-radius: 18px;
   padding: 12px 14px;
+  animation: rise 500ms var(--spring) 1500ms both;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -375,53 +395,39 @@ const stats = computed(() => {
   align-items: center;
   justify-content: center;
   flex: none;
+  animation: wiggle 2.4s ease-in-out 2.2s infinite;
 }
 .cbody {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 .shot {
-  width: 84px;
-  height: 84px;
+  width: 72px;
+  height: 72px;
   flex: none;
-  border-radius: 8px;
+  border-radius: 14px;
   object-fit: cover;
 }
 .cardbox {
-  width: 84px;
+  width: 72px;
+  height: 72px;
   flex: none;
-}
-.cardbox :deep(.tile) {
-  width: 84px;
-}
-.nocard {
-  width: 84px;
-  height: 84px;
-  border: 3px dashed var(--border);
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 28px;
-  color: var(--dash);
 }
 .ctext {
   flex: 1;
   min-width: 0;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 3px;
 }
 .ctext b {
-  font-size: 17px;
+  font-size: 16px;
 }
 .ctext small {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--muted);
   line-height: 1.3;
-}
-.ctext .pts {
-  font-size: 14px;
+  text-wrap: pretty;
 }
 .cbtns {
   display: flex;
@@ -434,9 +440,13 @@ const stats = computed(() => {
   justify-content: center;
   gap: 6px;
   height: 44px;
-  border-radius: 10px;
+  border-radius: 12px;
   border: 0;
   font-size: 15px;
+  transition: transform 140ms var(--spring);
+}
+.cbtns button:active {
+  transform: scale(0.94);
 }
 .cbtns .ok {
   background: var(--green);

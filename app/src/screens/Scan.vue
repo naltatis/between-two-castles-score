@@ -55,13 +55,17 @@ async function onFile(e: Event) {
       </div>
     </div>
 
-    <div class="frame">
-      <div class="dashed" />
+    <!-- the whole viewfinder is the camera button -->
+    <label class="frame" :class="{ busy }">
+      <span class="shine" />
+      <div class="corners"><span /><span /><span /><span /></div>
       <div class="center">
-        <Icon name="focus" :size="40" :width="1.5" />
-        <div>Ganzes Schloss in den Rahmen</div>
+        <span class="lens"><Icon name="camera" :size="40" :width="1.75" /></span>
+        <b>{{ busy ? "Bild wird geladen…" : "Foto aufnehmen" }}</b>
+        <small>Das ganze Schloss ins Bild</small>
       </div>
-    </div>
+      <input type="file" accept="image/*" capture="environment" :disabled="busy" @change="onFile" />
+    </label>
 
     <div class="tips">
       <div class="tip">
@@ -76,16 +80,6 @@ async function onFile(e: Event) {
     </div>
 
     <div class="foot">
-      <label class="btn light" :class="{ busy }">
-        <Icon name="camera" :size="22" />{{ busy ? "Bild wird geladen…" : "Foto aufnehmen" }}
-        <input
-          type="file"
-          accept="image/*"
-          capture="environment"
-          :disabled="busy"
-          @change="onFile"
-        />
-      </label>
       <label class="btn secondary">
         <Icon name="photo" :size="18" />Aus Mediathek
         <input type="file" accept="image/*" :disabled="busy" @change="onFile" />
@@ -96,19 +90,71 @@ async function onFile(e: Event) {
 
 <style scoped>
 .frame {
+  display: block;
+  cursor: pointer;
   position: relative;
-  margin: 8px 16px 0;
+  /* hero + tips sit centred between header and footer */
+  margin: auto 16px 0;
   height: 400px;
-  max-height: 45dvh;
-  border-radius: 16px;
+  max-height: 48dvh;
+  border-radius: 24px;
   overflow: hidden;
-  background: #000;
+  background: var(--head-text);
+  color: var(--dark);
+  box-shadow: 0 18px 40px -20px rgba(0, 0, 0, 0.6);
+  transition: transform 140ms var(--spring);
+  animation: rise 500ms ease-out 100ms both;
 }
-.dashed {
+.frame:active {
+  transform: scale(0.97);
+}
+.frame.busy {
+  opacity: 0.6;
+}
+.corners {
   position: absolute;
-  inset: 28px;
-  border: 2px dashed rgba(244, 241, 228, 0.75);
-  border-radius: 12px;
+  inset: 24px;
+  animation: breathe 2.6s ease-in-out infinite;
+}
+.corners span {
+  position: absolute;
+  width: 38px;
+  height: 38px;
+  border: 0 solid var(--dash);
+}
+.corners span:nth-child(1) {
+  left: 0;
+  top: 0;
+  border-width: 3px 0 0 3px;
+  border-top-left-radius: 14px;
+}
+.corners span:nth-child(2) {
+  right: 0;
+  top: 0;
+  border-width: 3px 3px 0 0;
+  border-top-right-radius: 14px;
+}
+.corners span:nth-child(3) {
+  left: 0;
+  bottom: 0;
+  border-width: 0 0 3px 3px;
+  border-bottom-left-radius: 14px;
+}
+.corners span:nth-child(4) {
+  right: 0;
+  bottom: 0;
+  border-width: 0 3px 3px 0;
+  border-bottom-right-radius: 14px;
+}
+.shine {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: rgba(255, 255, 255, 0.7);
+  animation: shine 2.8s ease-in-out 1.4s infinite;
+  pointer-events: none;
 }
 .center {
   position: absolute;
@@ -119,28 +165,55 @@ async function onFile(e: Event) {
   flex-direction: column;
   align-items: center;
   gap: 6px;
-  font-size: 14px;
-  font-weight: 600;
   white-space: nowrap;
 }
+.lens {
+  width: 88px;
+  height: 88px;
+  margin-bottom: 10px;
+  border-radius: 44px;
+  background: var(--cta);
+  color: var(--head-text);
+  display: grid;
+  place-items: center;
+  animation: ring-dark 2.2s ease-out 1s infinite;
+}
+@keyframes ring-dark {
+  0% {
+    box-shadow: 0 0 0 0 rgba(36, 55, 43, 0.45);
+  }
+  100% {
+    box-shadow: 0 0 0 18px rgba(36, 55, 43, 0);
+  }
+}
+.center b {
+  font-size: 24px;
+}
+.center small {
+  font-size: 14px;
+  color: var(--muted);
+}
 .tips {
-  flex: 1;
-  padding: 20px 20px 0;
+  padding: 22px 20px 0;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 14px;
 }
 .tip {
   display: flex;
   gap: 12px;
   align-items: flex-start;
   font-size: 15px;
-  line-height: 1.35;
+  line-height: 1.4;
+  animation: rise 500ms ease-out 300ms both;
+}
+.tip + .tip {
+  animation-delay: 450ms;
 }
 .ok {
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
+  width: 30px;
+  height: 30px;
+  border-radius: 10px;
   background: var(--green);
   color: #fff;
   flex: none;
@@ -153,13 +226,12 @@ async function onFile(e: Event) {
   font-weight: 600;
 }
 .foot {
+  margin-top: auto;
   padding-top: 16px;
 }
 label.btn {
   cursor: pointer;
-}
-label.btn.busy {
-  opacity: 0.6;
+  animation: rise 500ms ease-out 600ms both;
 }
 label input {
   position: absolute;

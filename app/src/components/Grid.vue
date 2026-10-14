@@ -2,10 +2,7 @@
 import { computed } from "vue";
 import { TILES } from "../game/tiles";
 import type { Castle } from "../game/types";
-import { DIR_ROT, TYPE_COLOR } from "../icons";
-import Glyph from "./Glyph.vue";
-import Icon from "./Icon.vue";
-
+import Stone from "./Stone.vue";
 const props = defineProps<{
   castle: Castle;
   perTile: number[];
@@ -45,6 +42,14 @@ const pos = (p: { x: number; y: number }, wide = false) => ({
   gridColumn: `${p.x - bounds.value.minX + 1} / span ${wide ? 2 : 1}`,
   gridRow: `${bounds.value.maxY - p.y + 1}`,
 });
+/** pop-in order: outward from the throne */
+const delay = (p: { x: number; y: number }) => {
+  const rank = [...props.castle.tiles]
+    .map((q) => Math.hypot(q.x - 0.5, q.y))
+    .sort((a, b) => a - b)
+    .indexOf(Math.hypot(p.x - 0.5, p.y));
+  return `${250 + rank * 60}ms`;
+};
 const label = (i: number) => {
   const p = props.castle.tiles[i]!;
   const t = TILES[p.tile];
@@ -54,7 +59,7 @@ const label = (i: number) => {
 
 <template>
   <div class="scroll">
-    <div class="grid" :style="{ gridTemplateColumns: `repeat(${cols}, minmax(38px, 1fr))` }">
+    <div class="grid" :style="{ '--cols': cols }">
       <div
         v-for="e in empties"
         :key="`${e.x},${e.y}`"
@@ -67,33 +72,17 @@ const label = (i: number) => {
         v-for="(p, i) in castle.tiles"
         :key="i"
         type="button"
-        class="tile"
-        :class="{
-          throne: TILES[p.tile]?.type === 'throne',
-          unsure: review.includes(`${p.x},${p.y}`),
-          unknown: !TILES[p.tile],
-          sel: isSel(p.x, p.y),
-        }"
-        :style="{
-          ...pos(p, TILES[p.tile]?.type === 'throne'),
-          '--c': TILES[p.tile] ? TYPE_COLOR[TILES[p.tile]!.type] : '#9aa38c',
-        }"
+        class="cell"
+        :style="{ ...pos(p, TILES[p.tile]?.type === 'throne'), animationDelay: delay(p) }"
         :aria-label="label(i)"
         @click="emit('pick', p.x, p.y)"
       >
-        <span class="banner" />
-        <span v-if="TILES[p.tile]?.type === 'throne'" class="body h">
-          <Icon name="crown" :size="13" :width="2.5" />Thron
-        </span>
-        <span v-else-if="TILES[p.tile]" class="body">
-          <Glyph
-            :name="TILES[p.tile]!.type"
-            :size="18"
-            :style="{ transform: `rotate(${DIR_ROT[TILES[p.tile]!.dir ?? ''] ?? 0}deg)` }"
-          />
-        </span>
-        <span v-else class="body">?</span>
-        <span class="badge">{{ review.includes(`${p.x},${p.y}`) ? "?" : perTile[i] }}</span>
+        <Stone
+          :tile="TILES[p.tile]"
+          :points="perTile[i]"
+          :unsure="review.includes(`${p.x},${p.y}`)"
+          :selected="isSel(p.x, p.y)"
+        />
       </button>
     </div>
   </div>
@@ -101,84 +90,37 @@ const label = (i: number) => {
 
 <style scoped>
 .scroll {
+  container-type: inline-size;
   overflow-x: auto;
+  padding: 8px;
+  border-radius: 20px;
+  background: var(--board);
 }
 .grid {
+  --cell: max(34px, min(56px, (100cqw - (var(--cols) - 1) * 4px) / var(--cols)));
   display: grid;
-  grid-auto-rows: 38px;
-  gap: 3px;
-  min-width: 100%;
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  grid-auto-rows: var(--cell);
+  gap: 4px;
+  justify-content: center;
 }
 .empty {
-  border: 1px dashed var(--rail);
-  border-radius: 6px;
+  border: 1.5px dashed var(--board-line);
+  border-radius: 23%;
   cursor: pointer;
+  animation: fade 400ms ease-out 200ms both;
 }
 .empty.ground {
-  background: var(--idle);
+  background: rgba(251, 251, 246, 0.35);
 }
-.tile {
-  position: relative;
-  padding: 0;
-  border: 2px solid var(--border);
-  border-radius: 6px;
-  background: var(--card);
-  overflow: hidden;
-  display: flex;
-  flex-direction: column;
-  color: var(--c);
-}
-.tile.unsure {
-  border-color: var(--orange);
-}
-.sel {
+.empty.sel {
   outline: 3px solid var(--cta);
   outline-offset: 1px;
 }
-.tile.unknown {
-  border-style: dashed;
-}
-.banner {
-  height: 11px;
-  background: var(--c);
-  flex: none;
-}
-.body {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 3px;
-  padding: 0 18px 0 5px;
-  font-size: 11px;
-  font-weight: 700;
-}
-.throne .body {
-  justify-content: center;
-  padding: 0 20px 0 0;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-}
-.badge {
-  position: absolute;
-  right: 2px;
-  top: 11px;
-  bottom: 0;
-  margin: auto 0;
-  min-width: 16px;
-  height: 16px;
-  padding: 0 4px;
-  border-radius: 8px;
-  background: var(--text);
-  color: var(--score);
-  font-size: 10px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.unsure .badge {
-  background: var(--orange);
-  color: #fff;
+.cell {
+  padding: 0;
+  border: 0;
+  background: none;
+  animation: pop 520ms var(--spring) both;
 }
 </style>

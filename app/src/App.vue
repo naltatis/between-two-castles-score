@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, reactive, ref, watch } from "vue";
-import { scoreGame } from "./game/score";
+import { neighboursOf, scoreGame } from "./game/score";
 import { TILE_LIST, TILES } from "./game/tiles";
 import type { Castle, Game } from "./game/types";
 import type { Recognition } from "./recognize";
@@ -119,7 +119,7 @@ function finish() {
   <Scan
     v-else-if="screen === 'scan'"
     :title="pairName(sel)"
-    :sub="`Schloss ${sel + 1} von ${game.castles.length}`"
+    :sub="'Schloss fotografieren'"
     @back="screen = 'overview'"
     @photo="onPhoto"
   />
@@ -138,6 +138,7 @@ function finish() {
     :review="review"
     @update:review="review = $event"
     :crops="crops"
+    :neighbours="neighboursOf(game, sel)"
     @back="screen = 'scan'"
     @next="screen = 'extras'"
   />

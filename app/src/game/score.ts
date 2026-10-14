@@ -316,13 +316,15 @@ export interface PlayerResult {
   rank: number;
 }
 
+/** the castles left and right of castle i (ballrooms score them); none with two players */
+export function neighboursOf(game: Game, i: number): Castle[] {
+  const n = game.castles.length;
+  return n >= 3 ? [game.castles[(i + n - 1) % n]!, game.castles[(i + 1) % n]!] : [];
+}
+
 export function scoreGame(game: Game): { castles: CastleScore[]; players: PlayerResult[] } {
   const n = game.castles.length;
-  const castles = game.castles.map((c, i) =>
-    scoreCastle(c, {
-      neighbours: n >= 3 ? [game.castles[(i + n - 1) % n]!, game.castles[(i + 1) % n]!] : [],
-    }),
-  );
+  const castles = game.castles.map((c, i) => scoreCastle(c, { neighbours: neighboursOf(game, i) }));
   const players = game.players.map((name, i) => {
     const a = (i + n - 1) % n;
     const pair = [castles[a]!.total, castles[i]!.total] as [number, number];

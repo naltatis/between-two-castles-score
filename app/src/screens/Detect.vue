@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from "vue";
 import Icon from "../components/Icon.vue";
+import { useCountUp } from "../countUp";
 import { TILES } from "../game/tiles";
 import type { Deco } from "../game/types";
 import { DECO_LABEL, TYPE_LABEL } from "../icons";
@@ -15,6 +16,8 @@ const failed = ref(false);
 const error = ref("");
 const stage = ref("Foto übergeben");
 const seconds = ref(0);
+/** total recognition time in seconds, once finished */
+const took = ref(0);
 onMounted(async () => {
   const t0 = performance.now();
   const tick = setInterval(
@@ -29,6 +32,7 @@ onMounted(async () => {
     console.error("recognition failed", e);
   } finally {
     clearInterval(tick);
+    took.value = (performance.now() - t0) / 1000;
   }
 });
 
@@ -49,18 +53,10 @@ const throneText = computed(() => {
   return `${r(t.wants)} / ${r(t.wants2)} · ${DECO_LABEL[t.deco as Deco]}`;
 });
 const empty = computed(() => rec.value && !rec.value.cells.length && !rec.value.throne);
-/** one line of diagnostics for phone reports */
-const diag = computed(() => {
-  const t = rec.value?.debug?.timing;
-  if (!t) return "";
-  const [w, h] = rec.value!.imageSize;
-  const s = (ms: number) => `${(ms / 1000).toFixed(1)} s`;
-  return (
-    `${w}×${h} · ${seconds.value} s · Suche ${s(t.locate)} · Erkennen ${s(t.classify)} · OpenCV ${s(t.cv)}` +
-    (t.brute ? ` · ${t.brute}× Breitensuche` : "") +
-    ` · JS ${rec.value!.debug?.jsMain ?? "?"}/${t.js} ms`
-  );
-});
+const found = useCountUp(() => rec.value?.cells.length ?? 0, 1500, 700);
+/** boxes appear as the scan line passes them */
+const sweepDelay = (b: [number, number, number, number]) =>
+  Math.round(200 + 1100 * ((b[0] + b[2]) / 2 / (rec.value?.imageSize[0] ?? 1) + 0.06));
 const mid = (b: [number, number, number, number]) => [(b[0] + b[2]) / 2, (b[1] + b[3]) / 2];
 /** marker radius in image pixels (~10 px on a 358 px wide display) */
 const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
@@ -94,6 +90,7 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
             :width="c.box[2] - c.box[0]"
             :height="c.box[3] - c.box[1]"
             :class="{ unsure: !c.tile || c.confidence < 0.8 }"
+            :style="{ animationDelay: `${sweepDelay(c.box)}ms` }"
           />
           <rect
             v-if="rec.throne"
@@ -102,17 +99,19 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
             :y="rec.throne.box[1]"
             :width="rec.throne.box[2] - rec.throne.box[0]"
             :height="rec.throne.box[3] - rec.throne.box[1]"
+            :style="{ animationDelay: `${sweepDelay(rec.throne.box)}ms` }"
           />
           <g
             v-for="(c, i) in unsure"
             :key="`u${i}`"
             class="mark"
-            :style="{ fontSize: `${mark * 1.3}px` }"
+            :style="{ fontSize: `${mark * 1.3}px`, animationDelay: `${sweepDelay(c.box) + 220}ms` }"
           >
             <circle :cx="mid(c.box)[0]" :cy="mid(c.box)[1]" :r="mark" />
             <text :x="mid(c.box)[0]" :y="mid(c.box)[1]" :dy="mark * 0.45">?</text>
           </g>
         </svg>
+        <div :key="rec ? 'done' : 'wait'" class="scanline" :class="{ loop: !rec && !failed }" />
       </div>
     </div>
 
@@ -131,18 +130,22 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
         </div>
       </div>
     </div>
-    <div v-else-if="rec" class="card">
+    <div v-else-if="rec" class="card result">
       <div class="row">
         <span class="ic ok"><Icon name="check" :width="2.5" /></span>
         <div>
-          <b>{{ rec.cells.length }} Plättchen gefunden</b>
+          <b
+            ><span class="num">{{ found }}</span> Plättchen gefunden</b
+          >
           <small>{{ extent.cols }} Spalten, {{ extent.rows }} Stockwerke</small>
         </div>
       </div>
       <div class="row">
-        <span class="ic" :class="rec.throne ? 'ok' : 'q'"><Icon name="crown" :width="2.25" /></span>
+        <span class="ic" :class="rec.throne ? 'gold' : 'q'"
+          ><Icon name="crown" :width="2.25"
+        /></span>
         <div>
-          <b>{{ rec.throne ? "Thronsaal erkannt" : "Thronsaal nicht erkannt" }}</b>
+          <b>{{ rec.throne ? "Thronsaal gefunden" : "Thronsaal nicht erkannt" }}</b>
           <small>{{
             rec.throne
               ? throneText || "Typ im nächsten Schritt wählen"
@@ -152,26 +155,29 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
       </div>
       <div class="row">
         <span class="ic" :class="unsure.length ? 'q' : 'ok'">
-          <template v-if="unsure.length">?</template><Icon v-else name="check" :width="2.5" />
+          <span v-if="unsure.length" class="wiggle">?</span
+          ><Icon v-else name="check" :width="2.5" />
         </span>
         <div>
           <b>{{ unsure.length }} Plättchen unsicher</b>
           <small>{{
-            unsure.length ? "Im nächsten Schritt kurz bestätigen" : "Alles eindeutig erkannt"
+            unsure.length ? "Gleich kurz nachschauen, dauert Sekunden" : "Alles eindeutig erkannt"
           }}</small>
         </div>
       </div>
     </div>
 
+    <small v-if="rec && !empty" class="diag"
+      >Erkannt in {{ took.toFixed(1).replace(".", ",") }} s</small
+    >
     <div class="spacer" />
-    <div class="foot">
+    <div class="foot" :class="{ reveal: rec && !empty }">
       <button v-if="failed || empty" type="button" class="btn light" @click="emit('back')">
         Neues Foto
       </button>
       <template v-else>
-        <small v-if="diag" class="diag">{{ diag }}</small>
         <button type="button" class="btn light" :disabled="!rec" @click="rec && emit('apply', rec)">
-          Weiter zum Schloss
+          Weiter zum Schloss <Icon name="next" :size="20" :width="2.5" />
         </button>
         <button type="button" class="btn secondary" @click="emit('back')">Neues Foto</button>
       </template>
@@ -183,7 +189,7 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
 .photo {
   position: relative;
   margin: 8px 16px 0;
-  border-radius: 16px;
+  border-radius: 20px;
   overflow: hidden;
   background: #000;
   max-height: 45dvh;
@@ -206,7 +212,13 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
   width: 100%;
   height: 100%;
 }
+.overlay rect,
+.mark {
+  transform-box: fill-box;
+  transform-origin: center;
+}
 .overlay rect {
+  animation: boxin 320ms var(--spring) both;
   fill: none;
   stroke: var(--green-light);
   stroke-width: 2;
@@ -218,6 +230,23 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
 .overlay rect.throne {
   stroke: var(--score);
   stroke-width: 3;
+}
+.mark {
+  animation: pop 420ms var(--spring) both;
+}
+.scanline {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -6%;
+  width: 3px;
+  background: var(--green-light);
+  box-shadow: 0 0 22px 6px rgba(111, 211, 106, 0.5);
+  opacity: 0;
+  animation: sweepX 1.4s cubic-bezier(0.45, 0.05, 0.55, 0.95) 200ms both;
+}
+.scanline.loop {
+  animation-iteration-count: infinite;
 }
 .mark circle {
   fill: var(--orange);
@@ -231,7 +260,7 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
 .card {
   margin: 16px 16px 0;
   background: var(--dark-card);
-  border-radius: 16px;
+  border-radius: 20px;
   padding: 16px;
   display: flex;
   flex-direction: column;
@@ -246,6 +275,29 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
   align-items: center;
   gap: 12px;
 }
+/* the result rows rise one after another once the scan line has passed */
+.result .row {
+  animation: rise 450ms ease-out 1500ms both;
+}
+.result .row .ic {
+  animation: pop 420ms var(--spring) 1600ms both;
+}
+.result .row:nth-child(2) {
+  animation-delay: 1700ms;
+}
+.result .row:nth-child(2) .ic {
+  animation-delay: 1800ms;
+}
+.result .row:nth-child(3) {
+  animation-delay: 1900ms;
+}
+.result .row:nth-child(3) .ic {
+  animation-delay: 2000ms;
+}
+.wiggle {
+  display: inline-block;
+  animation: wiggle 2.4s ease-in-out 2.6s infinite;
+}
 .row b {
   display: block;
   font-size: 16px;
@@ -255,9 +307,9 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
   opacity: 0.7;
 }
 .ic {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
   flex: none;
   display: flex;
   align-items: center;
@@ -271,7 +323,7 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
 }
 .ic.gold {
   background: var(--score);
-  color: var(--dark);
+  color: var(--head);
 }
 .ic.q {
   background: var(--orange);
@@ -279,10 +331,14 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
 .foot {
   padding-top: 16px;
 }
+.foot.reveal {
+  animation: rise 500ms ease-out 2100ms both;
+}
 .diag {
-  display: block;
-  padding: 0 20px 8px;
-  font-size: 11px;
+  margin-top: 10px;
+  animation: fade 400ms ease-out 2100ms both;
+  text-align: center;
+  font-size: 12px;
   opacity: 0.6;
 }
 </style>

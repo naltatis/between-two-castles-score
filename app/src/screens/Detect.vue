@@ -2,9 +2,6 @@
 import { computed, onMounted, ref } from "vue";
 import Icon from "../components/Icon.vue";
 import { useCountUp } from "../countUp";
-import { TILES } from "../game/tiles";
-import type { Deco } from "../game/types";
-import { DECO_LABEL, TYPE_LABEL } from "../icons";
 import { recognize, type Recognition } from "../recognize";
 
 const props = defineProps<{ title: string; photo: { canvas: HTMLCanvasElement; url: string } }>();
@@ -45,12 +42,6 @@ const extent = computed(() => {
     cols: Math.max(...xs) - Math.min(...xs) + 1,
     rows: Math.max(...ys) - Math.min(...ys) + 1,
   };
-});
-const throneText = computed(() => {
-  const t = rec.value?.throne?.tile ? TILES[rec.value.throne.tile] : undefined;
-  if (!t) return "";
-  const r = (k: string | undefined) => (k ? TYPE_LABEL[k as keyof typeof TYPE_LABEL][1] : "");
-  return `${r(t.wants)} / ${r(t.wants2)} · ${DECO_LABEL[t.deco as Deco]}`;
 });
 const empty = computed(() => rec.value && !rec.value.cells.length && !rec.value.throne);
 const found = useCountUp(() => rec.value?.cells.length ?? 0, 1500, 700);
@@ -141,19 +132,6 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
         </div>
       </div>
       <div class="row">
-        <span class="ic" :class="rec.throne ? 'gold' : 'q'"
-          ><Icon name="crown" :width="2.25"
-        /></span>
-        <div>
-          <b>{{ rec.throne ? "Thronsaal gefunden" : "Thronsaal nicht erkannt" }}</b>
-          <small>{{
-            rec.throne
-              ? throneText || "Typ im nächsten Schritt wählen"
-              : "Im nächsten Schritt wählen"
-          }}</small>
-        </div>
-      </div>
-      <div class="row">
         <span class="ic" :class="unsure.length ? 'q' : 'ok'">
           <span v-if="unsure.length" class="wiggle">?</span
           ><Icon v-else name="check" :width="2.5" />
@@ -161,7 +139,7 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
         <div>
           <b>{{ unsure.length }} Plättchen unsicher</b>
           <small>{{
-            unsure.length ? "Gleich kurz nachschauen, dauert Sekunden" : "Alles eindeutig erkannt"
+            unsure.length ? "Bitte im nächsten Schritt prüfen" : "Alles eindeutig erkannt"
           }}</small>
         </div>
       </div>
@@ -288,12 +266,6 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
 .result .row:nth-child(2) .ic {
   animation-delay: 1800ms;
 }
-.result .row:nth-child(3) {
-  animation-delay: 1900ms;
-}
-.result .row:nth-child(3) .ic {
-  animation-delay: 2000ms;
-}
 .wiggle {
   display: inline-block;
   animation: wiggle 2.4s ease-in-out 2.6s infinite;
@@ -320,10 +292,6 @@ const mark = computed(() => ((rec.value?.imageSize[0] ?? 1000) / 358) * 10);
 }
 .ic.ok {
   background: var(--green);
-}
-.ic.gold {
-  background: var(--score);
-  color: var(--head);
 }
 .ic.q {
   background: var(--orange);

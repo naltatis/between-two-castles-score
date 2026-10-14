@@ -119,7 +119,7 @@ function finish() {
   <Scan
     v-else-if="screen === 'scan'"
     :title="pairName(sel)"
-    :sub="'Schloss fotografieren'"
+    :sub="`Schloss ${sel + 1} von ${game.castles.length}`"
     @back="screen = 'overview'"
     @photo="onPhoto"
   />

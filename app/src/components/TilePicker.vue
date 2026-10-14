@@ -77,7 +77,7 @@ const list = computed<Tile[]>(() => {
       </div>
       <div class="top">
         <Icon name="search" :size="18" />
-        <input v-model="q" name="q" placeholder="Welcher Raum ist es?" aria-label="Suchen" />
+        <input v-model="q" name="q" placeholder="Plättchen suchen" aria-label="Suchen" />
       </div>
       <div class="types">
         <button type="button" :class="{ on: type === '' }" @click="type = ''">alle</button>
@@ -92,9 +92,7 @@ const list = computed<Tile[]>(() => {
           {{ TYPE_LABEL[t][1] }}
         </button>
       </div>
-      <div class="hint">
-        <span class="chip num">3</span>Punkte, die das Plättchen auf diesem Feld bringt
-      </div>
+      <div class="hint"><span class="chip num">3</span>Punkte auf diesem Feld</div>
       <div class="list">
         <button
           v-for="(t, i) in list"

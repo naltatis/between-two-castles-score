@@ -150,7 +150,7 @@ const stats = computed(() => {
         <div class="h title">{{ title }}</div>
         <div class="sub">
           {{ castle.tiles.length }} Plättchen<template v-if="review.length">
-            · {{ review.length }} zum Nachschauen</template
+            · {{ review.length }} zu prüfen</template
           >
         </div>
       </div>
@@ -200,7 +200,7 @@ const stats = computed(() => {
         <div class="chead">
           <span class="q">?</span>
           <span
-            >Kurz nachgeschaut · {{ reviewTotal - review.length + 1 }} von {{ reviewTotal }}</span
+            >Unsicher erkannt · {{ reviewTotal - review.length + 1 }} von {{ reviewTotal }}</span
           >
         </div>
         <div class="cbody">
@@ -229,10 +229,7 @@ const stats = computed(() => {
             </template>
             <template v-else>
               <b>Nicht erkannt</b>
-              <small
-                >Feld ({{ current.x }}, {{ current.y }}) · Plättchen auswählen oder Feld leer
-                lassen</small
-              >
+              <small>Plättchen wählen oder Feld leer lassen</small>
             </template>
           </div>
         </div>

@@ -1,0 +1,2 @@
+- Vue app, not React: synced as a style reference only (styles.css, fonts, screenshots, preview cards, README), no component bundle.
+- Screenshots: playwright script drives the dev server through the real flow (scan of test-fixtures/IMG_0144.jpg); photos left unblurred on request.
